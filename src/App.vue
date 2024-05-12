@@ -1,11 +1,13 @@
 <template>
     <div class="app">
-        <Person></Person>
+        <!-- <Person></Person> -->
+        <Form></Form>
     </div>
 </template>
 
 <script lang="ts" setup name="App">
 // js/ts code
+import Form from './components/Form.vue';
 import Person from './components/Person.vue'
 
 </script>
