@@ -3,10 +3,7 @@
         <ul class="inputForm">
             <li>
                 <p>Google地圖清單連結:</p>
-                <p v-if="formData.googleMapURLError" class="error-message">{{ formData.googleMapURLError }}</p>
-                <input type="text" v-model="formData.googleMapURL"
-                    :class="{ 'error': formData.googleMapURLError, 'full-width': true }"
-                    placeholder="https://maps.app.goo.gl/..." />
+                <input type="text" v-model="formData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
             </li>
             <li>是否來回相同機場:
                 <select v-model="sameAirport">
@@ -20,13 +17,11 @@
                         {{ airport.name }}
                     </option>
                 </select><br>
-                <!-- <span>抵達機場: {{ formData.arrivalAirport }}</span> -->
                 回程機場:<select v-model="formData.returnAirport">
                     <option v-for="(airport, index) in airports" :key="index" :value="airport">
                         {{ airport.name }}
                     </option>
                 </select>
-                <!-- <span>回程機場: {{ formData.returnAirport }}</span> -->
             </li>
             <li class="dateTimeRange">請輸入旅遊抵達日期與離境日期:
                 <flat-pickr v-model="dateRange" :config="config" /><br>
@@ -39,12 +34,6 @@
         </ul>
     </div>
 </template>
-
-<!-- <script lang="ts">
-export default {
-    name: 'Form',
-}
-</script> -->
 
 <script lang="ts" setup>
 import FlatPickr from 'vue-flatpickr-component';
@@ -59,28 +48,6 @@ const config: Partial<BaseOptions> = {
     dateFormat: 'Y-m-d',
 };
 
-// interface TravelTime {
-//     start: string;
-//     end: string;
-// }
-
-// interface Airport {
-//     name: string;
-//     coordinates: [number, number];
-// }
-// interface FormData {
-//     googleMapURL: string;
-//     googleMapURLError: string;
-//     arrivalAirport: Airport;
-//     arrivalAirportError: string;
-//     returnAirport: Airport;
-//     returnAirportError: string;
-//     dateTimeRange: TravelTime;
-//     dateTimeRangeError: string;
-//     dateList: string[];
-//     dateListError: string;
-// }
-
 let sameAirport = ref(false)
 let dateRange = ref('')
 let timeRange = ref<TravelTime>({ start: '', end: '' })
@@ -92,15 +59,10 @@ let airports = ref<Airport[]>([
 
 let formData = ref<FormData>({
     googleMapURL: '',
-    googleMapURLError: '',
     arrivalAirport: { name: '', coordinates: [0, 0] },
-    arrivalAirportError: '',
     returnAirport: { name: '', coordinates: [0, 0] },
-    returnAirportError: '',
     dateTimeRange: { start: '', end: '' },
-    dateTimeRangeError: '',
     dateList: [],
-    dateListError: '',
 })
 
 let isFormValid = computed(() => {
@@ -114,21 +76,6 @@ let isFormValid = computed(() => {
 
 // 繳交表單
 function submitForm() {
-    if (!formData.value.googleMapURL) {
-        formData.value.googleMapURLError = '請填寫Google Map清單連結';
-    }
-    if (!formData.value.arrivalAirport.name) {
-        formData.value.arrivalAirportError = '請選擇到達機場';
-    }
-    if (!formData.value.returnAirport.name) {
-        formData.value.returnAirportError = '請選擇返回機場';
-    }
-    if (!formData.value.dateTimeRange.start || !formData.value.dateTimeRange.end) {
-        formData.value.dateTimeRangeError = '請選擇日期和時間範圍';
-    }
-    if (!formData.value.dateList.length) {
-        formData.value.dateListError = '請選擇日期';
-    }
     if (isFormValid.value) {
         // 表單提交成功，這裡可以添加你的代碼
         console.log('表單提交成功');
@@ -182,9 +129,6 @@ let dateList = computed(() => {
 })
 </script>
 
-
-<!-- scoped局部樣式，css樣式只在當前組件內生效 -->
-<!-- 很重要，避免開發時樣式互相干擾 -->
 <style scoped>
 @import 'flatpickr/dist/flatpickr.min.css';
 
@@ -221,15 +165,7 @@ li input {
     margin-top: 10px;
 }
 
-.full-width {
+/* .full-width {
     width: 50%;
-}
-
-.error {
-    border-color: red;
-}
-
-.error-message {
-    color: red;
-}
+} */
 </style>
