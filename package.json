@@ -12,8 +12,11 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "sortablejs": "^1.15.2",
     "vue": "^3.4.21",
-    "vue-flatpickr-component": "^11.0.5"
+    "vue-draggable-plus": "^0.4.1",
+    "vue-flatpickr-component": "^11.0.5",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",

@@ -1,5 +1,6 @@
 import { ref, reactive } from "vue";
 import axios from "axios";
+import { onMounted } from "vue";
 
 // 把所有的內容封裝到一個函數中，並使用export default導出
 export default function () {
@@ -20,6 +21,12 @@ export default function () {
       alert(error);
     }
   };
+
+  // 載入時獲取狗狗圖片，呼叫第三方api
+  onMounted(() => {
+    getDog();
+  });
+
   // 向外部暴露數據和方法
   return {
     dogList, // 數據

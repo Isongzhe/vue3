@@ -5,6 +5,8 @@
     <hr>
     <img v-for="(dog, index) in dogList" :src="dog" :key="index">
     <button @click="getDog">新增一隻柯基</button>
+    <hr>
+
   </div>
 </template>
 
@@ -15,7 +17,6 @@ import uesSum from '@/hooks/uesSum';
 
 const { sum, add } = uesSum();
 const { dogList, getDog } = useDogs();
-
 </script>
 
 

@@ -10,11 +10,11 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import useDogs from '@/hooks/useDogs';
-import uesSum from '@/hooks/uesSum';
+// import useDogs from '@/hooks/useDogs';
+// import uesSum from '@/hooks/uesSum';
 
-const { sum, add } = uesSum();
-const { dogList, getDog } = useDogs();
+// const { sum, add } = uesSum();
+// const { dogList, getDog } = useDogs();
 
 </script>
 
