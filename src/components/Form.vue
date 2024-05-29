@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <ul>
+    <div>
+        <ul class="inputForm">
             <li>
                 <p>Google地圖清單連結:</p>
                 <p v-if="formData.googleMapURLError" class="error-message">{{ formData.googleMapURLError }}</p>

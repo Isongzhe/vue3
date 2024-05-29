@@ -13,10 +13,10 @@ import Person from './components/Person.vue'
 </script>
 
 <style>
-.app{
+/* .app{
     background-color: #ddd;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 20px;
     border-radius: 10px;
-}
+} */
 </style>

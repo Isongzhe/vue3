@@ -11,7 +11,8 @@
 
 <script lang="ts" setup>
 import { defineProps } from 'vue' // vue3不一定要引入，但是為了代碼規範，最好引入
-import { type Persons } from '@/types'
+// import { type Persons } from '@/types'
+import { type Persons } from 'D:\\GitHub\\Vue3+TS\\vue3\\src\\types\\index.ts';
 
 // 只接收父組件傳遞的數據
 // defineProps(['list'])
