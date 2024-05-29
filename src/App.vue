@@ -1,15 +1,15 @@
 <template>
     <div class="app">
-        <!-- <Person></Person> -->
-        <Form></Form>
+        <Person></Person>
+        <!-- <Form></Form> -->
     </div>
 </template>
 
 <script lang="ts" setup name="App">
 // js/ts code
+import { ref, onMounted } from 'vue'
 import Form from './components/Form.vue';
 import Person from './components/Person.vue'
-
 </script>
 
 <style>
