@@ -4,7 +4,8 @@
             <li>
                 <p>Google地圖清單連結:</p>
                 <p v-if="formData.googleMapURLError" class="error-message">{{ formData.googleMapURLError }}</p>
-                <input type="text" v-model="formData.googleMapURL" :class="{ 'error': formData.googleMapURLError ,'full-width': true }"
+                <input type="text" v-model="formData.googleMapURL"
+                    :class="{ 'error': formData.googleMapURLError, 'full-width': true }"
                     placeholder="https://maps.app.goo.gl/..." />
             </li>
             <li>是否來回相同機場:
@@ -50,6 +51,7 @@ import FlatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import type { BaseOptions } from 'flatpickr/dist/types/options';
 import { ref, watchEffect, computed } from 'vue'
+import type { TravelTime, Airport, FormData } from '@/types';
 
 const config: Partial<BaseOptions> = {
     minDate: "today",
@@ -57,27 +59,27 @@ const config: Partial<BaseOptions> = {
     dateFormat: 'Y-m-d',
 };
 
-interface TravelTime {
-    start: string;
-    end: string;
-}
+// interface TravelTime {
+//     start: string;
+//     end: string;
+// }
 
-interface Airport {
-    name: string;
-    coordinates: [number, number];
-}
-interface FormData {
-    googleMapURL: string;
-    googleMapURLError: string;
-    arrivalAirport: Airport;
-    arrivalAirportError: string;
-    returnAirport: Airport;
-    returnAirportError: string;
-    dateTimeRange: TravelTime;
-    dateTimeRangeError: string;
-    dateList: string[];
-    dateListError: string;
-}
+// interface Airport {
+//     name: string;
+//     coordinates: [number, number];
+// }
+// interface FormData {
+//     googleMapURL: string;
+//     googleMapURLError: string;
+//     arrivalAirport: Airport;
+//     arrivalAirportError: string;
+//     returnAirport: Airport;
+//     returnAirportError: string;
+//     dateTimeRange: TravelTime;
+//     dateTimeRangeError: string;
+//     dateList: string[];
+//     dateListError: string;
+// }
 
 let sameAirport = ref(false)
 let dateRange = ref('')
@@ -213,13 +215,16 @@ li {
     margin: 20px 0;
     width: 30%;
 }
-li input{
+
+li input {
     width: 100px;
     margin-top: 10px;
 }
+
 .full-width {
     width: 50%;
 }
+
 .error {
     border-color: red;
 }
