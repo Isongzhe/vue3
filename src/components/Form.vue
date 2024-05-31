@@ -1,38 +1,36 @@
 <template>
-    <div>
-        <ul class="inputForm">
-            <li>
-                <p>Google地圖清單連結:</p>
-                <input type="text" v-model="formData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
-            </li>
-            <li>是否來回相同機場:
-                <select v-model="sameAirport">
-                    <option value="true">是</option>
-                    <option value="false">否</option>
-                </select>
-            </li>
-            <li>
-                抵達機場:<select v-model="formData.arrivalAirport">
-                    <option v-for="(airport, index) in airports" :key="index" :value="airport">
-                        {{ airport.name }}
-                    </option>
-                </select><br>
-                回程機場:<select v-model="formData.returnAirport">
-                    <option v-for="(airport, index) in airports" :key="index" :value="airport">
-                        {{ airport.name }}
-                    </option>
-                </select>
-            </li>
-            <li class="dateTimeRange">請輸入旅遊抵達日期與離境日期:
-                <flat-pickr v-model="dateRange" :config="config" /><br>
-                請輸入開始旅行的時間: <input type="time" v-model="timeRange.start" /><br>
-                請輸入結束旅行的時間:<input type="time" v-model="timeRange.end" /><br>
-            </li>
-            <li>
-                <button type="submit" @click="submitForm()">提交</button>
-            </li>
-        </ul>
-    </div>
+    <ul class="inputForm">
+        <li>
+            <p>Google地圖清單連結:</p>
+            <input type="text" v-model="formData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
+        </li>
+        <li>是否來回相同機場:
+            <select v-model="sameAirport">
+                <option value="true">是</option>
+                <option value="false">否</option>
+            </select>
+        </li>
+        <li>
+            抵達機場:<select v-model="formData.arrivalAirport">
+                <option v-for="(airport, index) in airports" :key="index" :value="airport">
+                    {{ airport.name }}
+                </option>
+            </select><br>
+            回程機場:<select v-model="formData.returnAirport">
+                <option v-for="(airport, index) in airports" :key="index" :value="airport">
+                    {{ airport.name }}
+                </option>
+            </select>
+        </li>
+        <li class="dateTimeRange">請輸入旅遊抵達日期與離境日期:
+            <flat-pickr v-model="dateRange" :config="config" /><br>
+            請輸入開始旅行的時間: <input type="time" v-model="timeRange.start" /><br>
+            請輸入結束旅行的時間:<input type="time" v-model="timeRange.end" /><br>
+        </li>
+        <li>
+            <button type="submit" @click="submitForm()">提交</button>
+        </li>
+    </ul>
 </template>
 
 <script lang="ts" setup>
@@ -132,8 +130,18 @@ let dateList = computed(() => {
 <style scoped>
 @import 'flatpickr/dist/flatpickr.min.css';
 
+nav {
+    border: 2px solid #000;
+    color: #ffffff;
+    background-color: #05203c;
+    /* display: flex;
+    justify-content: flex-start;
+    align-items: center; */
+    padding-left: 48px;
+}
+
 * {
-    border: 1px solid black;
+    border: 5px solid black;
 }
 
 ul {

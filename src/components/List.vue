@@ -21,7 +21,14 @@
     </div>
 </template>
 
-<script setup>
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+    name: 'List',
+});
+</script>
+
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 const list1 = ref([

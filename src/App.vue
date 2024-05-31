@@ -1,24 +1,30 @@
 <template>
     <div class="app">
-        <!-- <Person></Person> -->
-        <!-- <Form></Form> -->
-        <List></List>
+        <Nav></Nav>
+        <Container></Container>
     </div>
 </template>
 
 <script lang="ts" setup name="App">
 // js/ts code
 import { ref, onMounted } from 'vue';
-import Form from './components/Form.vue';
-import Person from './components/Person.vue';
-import List from './components/List.vue';
+// import Form from './components/Form.vue';
+// import Person from './components/Person.vue';
+// import List from './components/List.vue';
+
+import Nav from './components/Nav.vue';
+import Container from './components/Container.vue';
 </script>
 
 <style>
-/* .app{
-    background-color: #ddd;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    padding: 20px;
-    border-radius: 10px;
-} */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+
+}
 </style>
