@@ -25,6 +25,6 @@ import Container from './components/Container.vue';
 
 body {
     font-family: 'Roboto', sans-serif;
-
+    color: #ffffff;
 }
 </style>

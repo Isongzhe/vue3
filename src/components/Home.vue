@@ -1,21 +1,41 @@
 <template>
     <div class="HomePage">
         <div class="inputForm">
-            <p>請輸入您的旅遊計畫</p>
-            <input type="text" value="">
-            <button @click="">提交</button>
+            <el-form-item label="User's name">
+                <el-input v-model="localFormData.name" />
+            </el-form-item>
+            <el-form-item label="Project's name">
+                <el-input v-model="localFormData.projectName" />
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">創建新專案</el-button>
+                <el-button @click="clearSubmit">清空專案</el-button>
+            </el-form-item>
         </div>
     </div>
 </template>
 
+<script lang="ts" setup>
+import { reactive } from 'vue';
+import { useFormStore } from '@/stores/useUserInfoStore';
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+const formStore = useFormStore();
 
-export default defineComponent({
-    name: 'Home',
-    // 其他選項...
-});
+// copy the form data from the store to the local form data 
+const localFormData = reactive({ ...formStore.formData }); //創建 formStore.formData 的淺拷貝。
+
+const onSubmit = () => {
+    console.log('submit');
+    console.log(localFormData);
+    formStore.updateForm(localFormData);
+};
+
+const clearSubmit = () => {
+    formStore.resetForm();
+    localFormData.name = "";
+    localFormData.projectName = "";
+};
 </script>
 
 <style scoped>
@@ -23,9 +43,7 @@ export default defineComponent({
     position: relative;
     background-image: url('https://www.hdwallpaper.nu/wp-content/uploads/2015/04/541326.jpg');
     background-size: cover;
-    /* 將背景圖片置於元素的中心 */
     background-position: center;
-    /* 防止背景圖片重複 */
     background-repeat: no-repeat;
     height: 300px;
     width: 98%;
@@ -37,7 +55,6 @@ export default defineComponent({
     top: 50%;
     right: 10%;
     transform: translate(0, -50%);
-
     background-color: #05203c;
     opacity: 0.95;
     color: #ffffff;
@@ -46,5 +63,14 @@ export default defineComponent({
     width: 30%;
     padding: 20px;
     font-weight: 700;
+}
+
+:deep(.el-form-item__label) {
+    color: #ffffff !important;
+}
+
+:deep(.el-button) {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
 }
 </style>
