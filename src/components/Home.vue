@@ -1,16 +1,15 @@
 <template>
     <div class="HomePage">
         <div class="inputForm">
-            <el-form-item label="User's name">
+            <el-form-item label="用戶名稱">
                 <el-input v-model="localFormData.name" />
             </el-form-item>
-            <el-form-item label="Project's name">
+            <el-form-item label="旅行計畫名稱">
                 <el-input v-model="localFormData.projectName" />
             </el-form-item>
-
             <el-form-item>
                 <el-button type="primary" @click="onSubmit">創建新專案</el-button>
-                <el-button @click="clearSubmit">清空專案</el-button>
+                <!-- <el-button @click="clearSubmit">清空專案</el-button> -->
             </el-form-item>
         </div>
     </div>
@@ -18,24 +17,31 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue';
-import { useFormStore } from '@/stores/useUserInfoStore';
+import { useUserInfoStore } from '@/stores/useUserInfoStore';
 
-const formStore = useFormStore();
+const formStore = useUserInfoStore();
 
 // copy the form data from the store to the local form data 
-const localFormData = reactive({ ...formStore.formData }); //創建 formStore.formData 的淺拷貝。
+// const localFormData = reactive({ ...formStore.userInfo }); //創建 formStore.formData 的淺拷貝。
+
+// 只拷貝需要的屬性
+const localFormData = reactive({
+    name: formStore.userInfo.name,
+    projectName: formStore.userInfo.projectName,
+});
 
 const onSubmit = () => {
     console.log('submit');
     console.log(localFormData);
-    formStore.updateForm(localFormData);
+    formStore.updateUserInfo(localFormData);
 };
 
-const clearSubmit = () => {
-    formStore.resetForm();
-    localFormData.name = "";
-    localFormData.projectName = "";
-};
+// const clearSubmit = () => {
+//     formStore.resetForm();
+//     localFormData.name = "";
+//     localFormData.projectName = "";
+// };
+
 </script>
 
 <style scoped>

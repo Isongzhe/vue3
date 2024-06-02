@@ -1,44 +1,57 @@
 <template>
-    <ul class="inputForm">
-        <li>
+    <el-form class="inputForm">
+        <el-form-item>
             <p>Google地圖清單連結:</p>
-            <input type="text" v-model="formData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
-        </li>
-        <li>是否來回相同機場:
-            <select v-model="sameAirport">
-                <option value="true">是</option>
-                <option value="false">否</option>
-            </select>
-        </li>
-        <li>
-            抵達機場:<select v-model="formData.arrivalAirport">
-                <option v-for="(airport, index) in airports" :key="index" :value="airport">
-                    {{ airport.name }}
-                </option>
-            </select><br>
-            回程機場:<select v-model="formData.returnAirport">
-                <option v-for="(airport, index) in airports" :key="index" :value="airport">
-                    {{ airport.name }}
-                </option>
-            </select>
-        </li>
-        <li class="dateTimeRange">請輸入旅遊抵達日期與離境日期:
-            <flat-pickr v-model="dateRange" :config="config" /><br>
-            請輸入開始旅行的時間: <input type="time" v-model="timeRange.start" /><br>
-            請輸入結束旅行的時間:<input type="time" v-model="timeRange.end" /><br>
-        </li>
-        <li>
-            <button type="submit" @click="submitForm()">提交</button>
-        </li>
-    </ul>
+            <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
+        </el-form-item>
+
+        <el-form-item label="抵達機場">
+            <el-select v-model="selectedArrivalAirport.name" placeholder="請選擇抵達機場" @change="handleArrivalAirportChange">
+                <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
+                    <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
+                        :value="airport.name" />
+                </el-option-group>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="回程機場">
+            <el-select v-model="selectedReturnAirport.name" placeholder="請選擇回程機場" @change="handleReturnAirportChange">
+                <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
+                    <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
+                        :value="airport.name" />
+                </el-option-group>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="請輸入旅遊抵達日期與離境日期">
+            <flat-pickr v-model="dateRange" :config="config" />
+        </el-form-item>
+
+        <el-form-item label="請輸入開始旅行的時間">
+            <el-time-select v-model="timeRange.start" placeholder="選擇時間" :start="timePickerOptions.start"
+                :step="timePickerOptions.step" :end="timePickerOptions.end" />
+        </el-form-item>
+        <el-form-item label="請輸入結束旅行的時間">
+            <el-time-select v-model="timeRange.end" placeholder="選擇時間" :start="timePickerOptions.start"
+                :step="timePickerOptions.step" :end="timePickerOptions.end" />
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="submitForm">提交</el-button>
+        </el-form-item>
+    </el-form>
 </template>
 
 <script lang="ts" setup>
 import FlatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import type { BaseOptions } from 'flatpickr/dist/types/options';
-import { ref, watchEffect, computed } from 'vue'
+
+import { reactive, ref, watchEffect, computed } from 'vue';
+
+import { useUserInfoStore } from '@/stores/useUserInfoStore';
 import type { TravelTime, Airport, FormData } from '@/types';
+
+import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElOptionGroup, ElButton, ElTimeSelect } from 'element-plus';
+import 'element-plus/dist/index.css';
 
 const config: Partial<BaseOptions> = {
     minDate: "today",
@@ -46,104 +59,143 @@ const config: Partial<BaseOptions> = {
     dateFormat: 'Y-m-d',
 };
 
-let sameAirport = ref(false)
-let dateRange = ref('')
-let timeRange = ref<TravelTime>({ start: '', end: '' })
+const formStore = useUserInfoStore();
 
-let airports = ref<Airport[]>([
-    { name: '成田機場(NRT)', coordinates: [35.7641817, 140.3847858] },
-    { name: '羽田機場(HND)', coordinates: [35.5493932, 139.7798386] },
-])
+const dateRange = ref<string>('');
+const timeRange = reactive<TravelTime>({ start: '', end: '' });
 
-let formData = ref<FormData>({
+const timePickerOptions = {
+    start: '00:00',
+    step: '00:15',
+    end: '23:45',
+};
+
+const airportGroups = ref([
+    {
+        label: '東京',
+        options: [
+            { name: '成田機場(NRT)', coordinates: [35.7641817, 140.3847858] },
+            { name: '羽田機場(HND)', coordinates: [35.5493932, 139.7798386] },
+        ],
+    },
+    {
+        label: '其他',
+        options: [
+            { name: '關西國際機場(KIX)', coordinates: [34.434722, 135.244167] },
+            { name: '中部國際機場(NGO)', coordinates: [34.858333, 136.804722] },
+            { name: '新千歲機場(CTS)', coordinates: [42.775278, 141.6925] },
+            { name: '福岡機場(FUK)', coordinates: [33.585, 130.45] },
+        ],
+    },
+]);
+
+const localFormData = reactive<FormData>({
     googleMapURL: '',
     arrivalAirport: { name: '', coordinates: [0, 0] },
     returnAirport: { name: '', coordinates: [0, 0] },
     dateTimeRange: { start: '', end: '' },
     dateList: [],
-})
-
-let isFormValid = computed(() => {
-    return formData.value.googleMapURL &&
-        formData.value.arrivalAirport.name &&
-        formData.value.returnAirport.name &&
-        formData.value.dateTimeRange.start &&
-        formData.value.dateTimeRange.end &&
-        formData.value.dateList.length;
 });
 
-// 繳交表單
-function submitForm() {
+const selectedArrivalAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
+const selectedReturnAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
+
+// 計算表單是否填寫完整
+const isFormValid = computed(() => {
+    return localFormData.googleMapURL &&
+        localFormData.arrivalAirport.name &&
+        localFormData.returnAirport.name &&
+        localFormData.dateTimeRange.start &&
+        localFormData.dateTimeRange.end &&
+        localFormData.dateList.length;
+});
+// 提交表單，有空值時提示使用者
+function submitForm(): void {
     if (isFormValid.value) {
-        // 表單提交成功，這裡可以添加你的代碼
         console.log('表單提交成功');
+        formStore.updateFormData(localFormData);
+    }
+    else {
+        alert('請填寫完整表單資訊');
     }
 }
 
+// 監聽Google地圖清單連結是否正確，若正確則先發出請求
 watchEffect(() => {
-    if (sameAirport.value) {
-        formData.value.returnAirport = formData.value.arrivalAirport
-    }
-})
-
-// 監聽Google地圖清單連結，如果符合格式則發出請求
-watchEffect(() => {
-    if (formData.value.googleMapURL === '') {
-        // 如果 googleMapURL 為空，則直接返回
+    if (localFormData.googleMapURL === '') {
         return;
     }
-    let urlPattern = /^https:\/\/maps\.app\.goo\.gl\/.+$/
-    if (urlPattern.test(formData.value.googleMapURL)) {
-        // 發出請求
-        // 你需要替換這裡的代碼來發出實際的請求
-        console.log('發出請求: ' + formData.value.googleMapURL);
+    const urlPattern = /^https:\/\/maps\.app\.goo\.gl\/.+$/;
+    if (urlPattern.test(localFormData.googleMapURL)) {
+        console.log('發出請求: ' + localFormData.googleMapURL);
     } else {
         console.log('Google地圖清單連結格式錯誤');
     }
-})
+});
 
-// 監聽日期區間，將日期與時間合併成一個物件
+// 監聽日期區間與時間區間變化，拆解成開始與結束時間
 watchEffect(() => {
-    let start = dateRange.value.split(' to ')[0]
-    let end = dateRange.value.split(' to ')[1]
-    formData.value.dateTimeRange = {
-        start: `${start}T${timeRange.value.start}`,
-        end: `${end}T${timeRange.value.end}`
+    const [start, end] = dateRange.value.split(' to ');
+    if (start && end && timeRange.start && timeRange.end) {
+        localFormData.dateTimeRange = {
+            start: `${start}T${timeRange.start}:00`,
+            end: `${end}T${timeRange.end}:00`,
+        };
+        console.log('選擇的日期區間:', localFormData.dateTimeRange);
     }
-})
+});
 
-// 生成日期列表，計算出旅遊日期的每一天，存成列表
-let dateList = computed(() => {
-    let dates = []
-    let start = new Date(dateRange.value.split(' to ')[0])
-    let end = new Date(dateRange.value.split(' to ')[1])
+// 生成日期列表
+const dateList = computed<string[]>(() => {
+    const dates: string[] = [];
+    let start = new Date(dateRange.value.split(' to ')[0]);
+    let end = new Date(dateRange.value.split(' to ')[1]);
     while (start <= end) {
-        dates.push(new Date(start).toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' }))
-        start.setDate(start.getDate() + 1)
+        dates.push(new Date(start).toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit' }));
+        start.setDate(start.getDate() + 1);
     }
-    formData.value.dateList = dates
-    return dates
-})
+    localFormData.dateList = dates;
+    return dates;
+});
+// 監聽日期列表變化，更新表單資料
+watchEffect(() => {
+    localFormData.dateList = dateList.value;
+});
+
+// 監聽抵達機場與回程機場變化，更新表單資料
+function handleArrivalAirportChange(value: string): void {
+    const selectedAirport = airportGroups.value.flatMap(group => group.options).find(airport => airport.name === value);
+    if (selectedAirport) {
+        const { name, coordinates } = selectedAirport;
+        console.log('選擇的抵達機場:', selectedAirport);
+        selectedArrivalAirport.value = { name, coordinates: coordinates as [number, number] };
+        localFormData.arrivalAirport = { name, coordinates: coordinates as [number, number] };
+    }
+}
+function handleReturnAirportChange(value: string): void {
+    const selectedAirport = airportGroups.value.flatMap(group => group.options).find(airport => airport.name === value);
+    if (selectedAirport) {
+        const { name, coordinates } = selectedAirport;
+        console.log('選擇的回程機場:', selectedAirport);
+        selectedReturnAirport.value = { name, coordinates: coordinates as [number, number] };
+        localFormData.returnAirport = { name, coordinates: coordinates as [number, number] };
+    }
+}
 </script>
 
 <style scoped>
 @import 'flatpickr/dist/flatpickr.min.css';
-
-nav {
+@import 'element-plus/dist/index.css';
+/* 
+.inputForm {
     border: 2px solid #000;
     color: #ffffff;
     background-color: #05203c;
-    /* display: flex;
-    justify-content: flex-start;
-    align-items: center; */
     padding-left: 48px;
+    width: 98%;
 }
 
-* {
-    border: 5px solid black;
-}
-
-ul {
+.inputForm {
     background-color: rgba(0, 0, 0, 0);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -151,28 +203,81 @@ ul {
     margin: 0 auto;
     max-width: 100%;
     box-sizing: border-box;
-
-    display: block;
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
 }
 
-li {
-    background-color: rgb(22, 198, 210);
+.el-form-item {
+    background-color: #05203c;
     display: block;
     text-align: start;
     padding: 10px 10px;
     margin: 20px 0;
-    width: 30%;
+    width: 100%;
 }
 
-li input {
-    width: 100px;
-    margin-top: 10px;
+:deep(.el-form-item__label, .el-radio) {
+    color: #ffffff !important;
 }
 
-/* .full-width {
-    width: 50%;
+:deep(.el-button) {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
 } */
+
+.inputForm {
+    background-color: #05203c;
+    opacity: 0.95;
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: 700;
+    width: 98%;
+}
+
+.inputForm>* {
+    border: 2px solid white;
+}
+
+.el-form-item {
+    background-color: #05203c;
+    display: block;
+    text-align: start;
+    padding: 10px 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* 表單標籤的樣式 */
+:deep(.el-form-item__label) {
+    color: #ffffff !important;
+}
+
+/* 時間輸入框的樣式 */
+:deep(.el-input__inner) {
+    color: black !important;
+}
+
+/* 下拉選單的樣式 */
+:deep(.el-select__caret) {
+    color: #ffffff !important;
+}
+
+:deep(.el-select-dropdown__item, .el-select-dropdown__item:hover) {
+    color: black !important;
+    background-color: #ffffff !important;
+}
+
+/* ratio選項按鈕的樣式 */
+:deep(.el-radio__label) {
+    color: #ffffff !important;
+}
+
+/* 按鈕的樣式 */
+:deep(.el-button) {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+}
 </style>

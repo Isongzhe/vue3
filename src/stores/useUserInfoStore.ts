@@ -2,31 +2,67 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
-// 定義表單接口
-interface FormData {
-  name: string;
-  projectName: string;
+interface TravelTime {
+  start: string;
+  end: string;
 }
 
-export const useFormStore = defineStore("form", () => {
-  const formData = reactive<FormData>({
+interface Airport {
+  name: string;
+  coordinates: [number, number];
+}
+
+interface FormData {
+  googleMapURL: string;
+  arrivalAirport: Airport;
+  returnAirport: Airport;
+  dateTimeRange: TravelTime;
+  dateList: string[];
+}
+
+interface UserInfo {
+  name: string;
+  projectName: string;
+  formData: FormData;
+}
+
+export const useUserInfoStore = defineStore("userInfo", () => {
+  const userInfo = reactive<UserInfo>({
     name: "",
     projectName: "",
+    formData: {
+      googleMapURL: "",
+      arrivalAirport: { name: "", coordinates: [0, 0] },
+      returnAirport: { name: "", coordinates: [0, 0] },
+      dateTimeRange: { start: "", end: "" },
+      dateList: [],
+    },
   });
 
-  const updateForm = (data: FormData) => {
-    formData.name = data.name;
-    formData.projectName = data.projectName;
+  const updateUserInfo = (data: Partial<UserInfo>) => {
+    Object.assign(userInfo, data);
   };
 
-  const resetForm = () => {
-    formData.name = "";
-    formData.projectName = "";
+  const updateFormData = (data: Partial<FormData>) => {
+    Object.assign(userInfo.formData, data);
+  };
+
+  const resetUserInfo = () => {
+    userInfo.name = "";
+    userInfo.projectName = "";
+    userInfo.formData = {
+      googleMapURL: "",
+      arrivalAirport: { name: "", coordinates: [0, 0] },
+      returnAirport: { name: "", coordinates: [0, 0] },
+      dateTimeRange: { start: "", end: "" },
+      dateList: [],
+    };
   };
 
   return {
-    formData,
-    updateForm,
-    resetForm,
+    userInfo,
+    updateUserInfo,
+    updateFormData,
+    resetUserInfo,
   };
 });
