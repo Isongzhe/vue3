@@ -80,7 +80,6 @@ function submitForm() {
     }
 }
 
-// 監聽是否來回相同機場，如果是則回程機場自動填入抵達機場
 watchEffect(() => {
     if (sameAirport.value) {
         formData.value.returnAirport = formData.value.arrivalAirport
