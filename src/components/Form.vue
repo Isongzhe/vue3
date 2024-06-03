@@ -186,46 +186,6 @@ function handleReturnAirportChange(value: string): void {
 <style scoped>
 @import 'flatpickr/dist/flatpickr.min.css';
 @import 'element-plus/dist/index.css';
-/* 
-.inputForm {
-    border: 2px solid #000;
-    color: #ffffff;
-    background-color: #05203c;
-    padding-left: 48px;
-    width: 98%;
-}
-
-.inputForm {
-    background-color: rgba(0, 0, 0, 0);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    margin: 0 auto;
-    max-width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
-
-.el-form-item {
-    background-color: #05203c;
-    display: block;
-    text-align: start;
-    padding: 10px 10px;
-    margin: 20px 0;
-    width: 100%;
-}
-
-:deep(.el-form-item__label, .el-radio) {
-    color: #ffffff !important;
-}
-
-:deep(.el-button) {
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
-} */
 
 .inputForm {
     background-color: #05203c;
@@ -281,3 +241,44 @@ function handleReturnAirportChange(value: string): void {
     font-weight: bold;
 }
 </style>
+
+<!-- /* 
+.inputForm {
+    border: 2px solid #000;
+    color: #ffffff;
+    background-color: #05203c;
+    padding-left: 48px;
+    width: 98%;
+}
+
+.inputForm {
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 0 auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.el-form-item {
+    background-color: #05203c;
+    display: block;
+    text-align: start;
+    padding: 10px 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+:deep(.el-form-item__label, .el-radio) {
+    color: #ffffff !important;
+}
+
+:deep(.el-button) {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+} */ -->
