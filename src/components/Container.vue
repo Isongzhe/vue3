@@ -2,7 +2,7 @@
     <div class="container">
         <Home />
         <Form></Form>
-        <!-- <Map></Map> -->
+        <Map></Map>
         <!-- <List></List> -->
     </div>
 </template>
@@ -20,7 +20,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import Home from '@/components/Home.vue';
 import Form from '@/components/Form.vue';
-import List from '@/components/List.vue';
+// import List from '@/components/List.vue';
 import Map from '@/components/Map.vue';
 
 </script>

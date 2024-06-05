@@ -1,127 +1,74 @@
 <template>
-    <div class="container">
-        <div class="button-group" id="button-container">
-            <button v-for="(info, index) in locationInfo" :key="info.date" @click="showDay(index + 1)">
-                {{ info.date }}
-            </button>
-            <button @click="showDay()">全部</button>
-        </div>
+    <div class="datesMap">
+
         <div id="map"></div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
-import { useLocationStore } from '@/stores/useLocationStore';
+/// <reference types="google.maps" /> 
 
-const map = ref(null);
-const markers = ref([]);
+import { onMounted } from 'vue';
+import { useLocationStore } from '@/stores/useLocationStore';
+// import { GoogleMap } from 'vue3-google-map'
+
+// const markers = ref([]);
 const locationInfo = useLocationStore();
 
-const initMap = () => {
-    map.value = new google.maps.Map(document.getElementById('map'), {
+let map: google.maps.Map;
+
+async function initMap(locationDay: { date: string, locations: { name: string, lat: number, lng: number }[] }): Promise<void> {
+    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+    map = new Map(document.getElementById("map") as HTMLElement, {
         zoom: 12,
+        mapId: "f61cd53a46d9e5a3",
         streetViewControl: false,
         mapTypeControl: false,
+        fullscreenControl: false,
     });
-
     const transitLayer = new google.maps.TransitLayer();
-    transitLayer.setMap(map.value);
+    transitLayer.setMap(map);
 
     const bounds = new google.maps.LatLngBounds();
-
-    locationInfo.locations.forEach((day, i) => {
-        markers.value[i] = [];
-        day.locations.forEach((location) => {
-            const marker = new google.maps.Marker({
-                position: location,
-                map: map.value,
-            });
-            markers.value[i].push(marker);
-            marker.addListener('click', () => {
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `這是景點: ${location.name}`,
-                });
-                infoWindow.open(map.value, marker);
-            });
-            bounds.extend(marker.getPosition());
-        });
-    });
-
-    map.value.fitBounds(bounds);
-};
-
-const showDay = (day) => {
-    markers.value.forEach((dayMarkers, i) => {
-        dayMarkers.forEach((marker) => {
-            marker.setMap(day ? (i === day - 1 ? map.value : null) : map.value);
-        });
-    });
-
-    const bounds = new google.maps.LatLngBounds();
-    if (day) {
-        markers.value[day - 1].forEach((marker) => {
-            bounds.extend(marker.getPosition());
-        });
-    } else {
-        markers.value.flat().forEach((marker) => {
-            bounds.extend(marker.getPosition());
+    for (const location of locationDay.locations) {
+        const position = new google.maps.LatLng(location.lat, location.lng);
+        bounds.extend(position);
+        new AdvancedMarkerElement({
+            position,
+            map,
+            title: location.name
         });
     }
-    map.value.fitBounds(bounds);
-};
+    map.fitBounds(bounds);
+}
 
-onMounted(() => {
-    initMap();
+onMounted(async () => {
+    await initMap(locationInfo.locations[0]);
+    console.log('Map is ready');
+    console.log(`顯示${locationInfo.locations[0].date}的地圖`)
+    const center = map.getCenter();
+    if (center) {
+        console.log(`Latitude: ${center.lat()}, Longitude: ${center.lng()}`);
+    }
 });
 </script>
 
 <style scoped>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-    max-width: 960px;
+.datesMap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 80%;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #d3daf2;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.button-group {
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
     border: 3px solid #000;
-    padding: 10px;
-}
+    border-radius: 12px;
 
-button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
 }
 
 #map {
     height: 400px;
-    width: 100%;
-    border: 3px solid #000;
+    width: 50%;
+    border: 3px solid gray;
 }
 </style>
