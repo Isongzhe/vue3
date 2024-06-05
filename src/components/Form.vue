@@ -47,29 +47,32 @@ import type { BaseOptions } from 'flatpickr/dist/types/options';
 
 import { reactive, ref, watchEffect, computed } from 'vue';
 
-import { useUserInfoStore } from '@/stores/useUserInfoStore';
-import type { TravelTime, Airport, FormData } from '@/types';
+// 引入 Pinia store
+import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
+import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 Google地圖api store
+import type { TravelTime, Airport, FormData } from '@/types'; // 引入自定義類型
 
+// 引入 Element Plus 組件
 import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElOptionGroup, ElButton, ElTimeSelect } from 'element-plus';
-import 'element-plus/dist/index.css';
+import 'element-plus/dist/index.css'; // 引入 Element Plus CSS
 
+// 設置 flatpickr 的選項
 const config: Partial<BaseOptions> = {
     minDate: "today",
     mode: 'range',
     dateFormat: 'Y-m-d',
 };
-
-const formStore = useUserInfoStore();
-
-const dateRange = ref<string>('');
-const timeRange = reactive<TravelTime>({ start: '', end: '' });
-
+// 設置時間選擇器的選項
 const timePickerOptions = {
     start: '00:00',
     step: '00:15',
     end: '23:45',
 };
 
+const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
+const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
+
+// 定義機場數據
 const airportGroups = ref([
     {
         label: '東京',
@@ -89,16 +92,21 @@ const airportGroups = ref([
     },
 ]);
 
+// 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
+const dateRange = ref<string>('');
+const timeRange = reactive<TravelTime>({ start: '', end: '' });
+const selectedArrivalAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
+const selectedReturnAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
+
+// 初始化本地表單響應式數據
 const localFormData = reactive<FormData>({
     googleMapURL: '',
     arrivalAirport: { name: '', coordinates: [0, 0] },
     returnAirport: { name: '', coordinates: [0, 0] },
     dateTimeRange: { start: '', end: '' },
     dateList: [],
+    places_name: [],
 });
-
-const selectedArrivalAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
-const selectedReturnAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
 
 // 計算表單是否填寫完整
 const isFormValid = computed(() => {
@@ -109,7 +117,7 @@ const isFormValid = computed(() => {
         localFormData.dateTimeRange.end &&
         localFormData.dateList.length;
 });
-// 提交表單，有空值時提示使用者
+// 提交表單，有空值時提示使用者，提交表單時更新 Pinia userInfoStore 的數據
 function submitForm(): void {
     if (isFormValid.value) {
         console.log('表單提交成功');
@@ -128,11 +136,17 @@ watchEffect(() => {
     const urlPattern = /^https:\/\/maps\.app\.goo\.gl\/.+$/;
     if (urlPattern.test(localFormData.googleMapURL)) {
         console.log('發出請求: ' + localFormData.googleMapURL);
+
+        // 使用 Pinia store 來獲取模擬數據
+        googleMapStore.fetchPlaces();
+        console.log('模擬 API 返回的數據:', googleMapStore.places);
+
+        // 將模擬數據賦值給相應的變量
+        localFormData.places_name = googleMapStore.places;
     } else {
         console.log('Google地圖清單連結格式錯誤');
     }
 });
-
 // 監聽日期區間與時間區間變化，拆解成開始與結束時間
 watchEffect(() => {
     const [start, end] = dateRange.value.split(' to ');
@@ -144,7 +158,6 @@ watchEffect(() => {
         console.log('選擇的日期區間:', localFormData.dateTimeRange);
     }
 });
-
 // 生成日期列表
 const dateList = computed<string[]>(() => {
     const dates: string[] = [];
@@ -184,6 +197,7 @@ function handleReturnAirportChange(value: string): void {
 </script>
 
 <style scoped>
+/* 導入 flatpickr跟Element Plus CSS (從script import) */
 @import 'flatpickr/dist/flatpickr.min.css';
 @import 'element-plus/dist/index.css';
 

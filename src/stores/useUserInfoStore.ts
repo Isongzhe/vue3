@@ -1,24 +1,26 @@
 // src/stores/useUserInfoStore.ts
 import { defineStore } from "pinia";
 import { reactive } from "vue";
+import type { TravelTime, Airport, FormData } from "@/types";
 
-interface TravelTime {
-  start: string;
-  end: string;
-}
+// interface TravelTime {
+//   start: string;
+//   end: string;
+// }
 
-interface Airport {
-  name: string;
-  coordinates: [number, number];
-}
+// interface Airport {
+//   name: string;
+//   coordinates: [number, number];
+// }
 
-interface FormData {
-  googleMapURL: string;
-  arrivalAirport: Airport;
-  returnAirport: Airport;
-  dateTimeRange: TravelTime;
-  dateList: string[];
-}
+// interface FormData {
+//   googleMapURL: string;
+//   arrivalAirport: Airport;
+//   returnAirport: Airport;
+//   dateTimeRange: TravelTime;
+//   dateList: string[];
+//   places_name: string[];
+// }
 
 interface UserInfo {
   name: string;
@@ -36,6 +38,7 @@ export const useUserInfoStore = defineStore("userInfo", () => {
       returnAirport: { name: "", coordinates: [0, 0] },
       dateTimeRange: { start: "", end: "" },
       dateList: [],
+      places_name: [],
     },
   });
 
@@ -56,6 +59,7 @@ export const useUserInfoStore = defineStore("userInfo", () => {
       returnAirport: { name: "", coordinates: [0, 0] },
       dateTimeRange: { start: "", end: "" },
       dateList: [],
+      places_name: [],
     };
   };
 
