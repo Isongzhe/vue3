@@ -18,7 +18,9 @@
 <script lang="ts" setup>
 import { reactive } from 'vue';
 import { useUserInfoStore } from '@/stores/useUserInfoStore';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const formStore = useUserInfoStore();
 
 // copy the form data from the store to the local form data 
@@ -34,14 +36,8 @@ const onSubmit = () => {
     console.log('submit');
     console.log(localFormData);
     formStore.updateUserInfo(localFormData);
+    router.push('/form');
 };
-
-// const clearSubmit = () => {
-//     formStore.resetForm();
-//     localFormData.name = "";
-//     localFormData.projectName = "";
-// };
-
 </script>
 
 <style scoped>
@@ -54,6 +50,7 @@ const onSubmit = () => {
     height: 300px;
     width: 98%;
     border-radius: 12px;
+    margin: 0 auto;
 }
 
 .inputForm {

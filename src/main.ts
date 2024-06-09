@@ -7,6 +7,8 @@ import { createPinia } from "pinia";
 // 引入Element Plus
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
+// 引入路由
+import router from "@/router";
 
 const app = createApp(App);
 
@@ -16,6 +18,8 @@ const pinia = createPinia();
 app.use(pinia);
 // 安裝Element Plus
 app.use(ElementPlus);
+// 安裝路由
+app.use(router);
 
 // 挂載Vue應用
 app.mount("#app");

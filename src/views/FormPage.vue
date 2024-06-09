@@ -1,40 +1,50 @@
 <template>
     <el-form class="inputForm">
-        <el-form-item>
-            <p>Google地圖清單連結:</p>
-            <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
-        </el-form-item>
-
-        <el-form-item label="抵達機場">
-            <el-select v-model="selectedArrivalAirport.name" placeholder="請選擇抵達機場" @change="handleArrivalAirportChange">
-                <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
-                    <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
-                        :value="airport.name" />
-                </el-option-group>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="回程機場">
-            <el-select v-model="selectedReturnAirport.name" placeholder="請選擇回程機場" @change="handleReturnAirportChange">
-                <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
-                    <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
-                        :value="airport.name" />
-                </el-option-group>
-            </el-select>
-        </el-form-item>
-
-        <el-form-item label="請輸入旅遊抵達日期與離境日期">
-            <flat-pickr v-model="dateRange" :config="config" />
-        </el-form-item>
-
-        <el-form-item label="請輸入開始旅行的時間">
-            <el-time-select v-model="timeRange.start" placeholder="選擇時間" :start="timePickerOptions.start"
-                :step="timePickerOptions.step" :end="timePickerOptions.end" />
-        </el-form-item>
-        <el-form-item label="請輸入結束旅行的時間">
-            <el-time-select v-model="timeRange.end" placeholder="選擇時間" :start="timePickerOptions.start"
-                :step="timePickerOptions.step" :end="timePickerOptions.end" />
-        </el-form-item>
-        <el-form-item>
+        <div class="card">
+            <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
+            <el-form-item>
+                <p>Google地圖清單連結:</p>
+                <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
+            </el-form-item>
+        </div>
+        <div class="card">
+            <div class="card-item">
+                <el-form-item label="抵達機場">
+                    <el-select v-model="selectedArrivalAirport.name" placeholder="請選擇抵達機場"
+                        @change="handleArrivalAirportChange">
+                        <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
+                            <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
+                                :value="airport.name" />
+                        </el-option-group>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="回程機場">
+                    <el-select v-model="selectedReturnAirport.name" placeholder="請選擇回程機場"
+                        @change="handleReturnAirportChange">
+                        <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
+                            <el-option v-for="(airport, idx) in group.options" :key="idx" :label="airport.name"
+                                :value="airport.name" />
+                        </el-option-group>
+                    </el-select>
+                </el-form-item>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-item">
+                <el-form-item label="請輸入旅遊抵達日期與離境日期">
+                    <flat-pickr v-model="dateRange" :config="config" />
+                </el-form-item>
+                <el-form-item label="請輸入開始旅行的時間">
+                    <el-time-select v-model="timeRange.start" placeholder="選擇時間" :start="timePickerOptions.start"
+                        :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                </el-form-item>
+                <el-form-item label="請輸入結束旅行的時間">
+                    <el-time-select v-model="timeRange.end" placeholder="選擇時間" :start="timePickerOptions.start"
+                        :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                </el-form-item>
+            </div>
+        </div>
+        <el-form-item class="button">
             <el-button type="primary" @click="submitForm">提交</el-button>
         </el-form-item>
     </el-form>
@@ -201,6 +211,11 @@ function handleReturnAirportChange(value: string): void {
 @import 'flatpickr/dist/flatpickr.min.css';
 @import 'element-plus/dist/index.css';
 
+/* 自定義樣式 */
+* {
+    border: 2px solid white;
+}
+
 .inputForm {
     background-color: #05203c;
     opacity: 0.95;
@@ -208,12 +223,13 @@ function handleReturnAirportChange(value: string): void {
     border-radius: 12px;
     padding: 10px;
     font-weight: 700;
-    width: 98%;
+    width: 85%;
+    margin: 20px auto;
 }
 
-.inputForm>* {
+/* .inputForm>* {
     border: 2px solid white;
-}
+} */
 
 .el-form-item {
     background-color: #05203c;
@@ -224,6 +240,29 @@ function handleReturnAirportChange(value: string): void {
     width: 100%;
 }
 
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    margin: 10px auto;
+}
+
+.card>* {
+    flex: 1;
+    max-width: 49%;
+    box-sizing: border-box;
+}
+
+/* 按鍵元素置中 */
+.button>* {
+    justify-content: center;
+}
+
+
+
+
+/* 覆蓋掉 Element Plus 的樣式 */
 /* 表單標籤的樣式 */
 :deep(.el-form-item__label) {
     color: #ffffff !important;
@@ -255,44 +294,3 @@ function handleReturnAirportChange(value: string): void {
     font-weight: bold;
 }
 </style>
-
-<!-- /* 
-.inputForm {
-    border: 2px solid #000;
-    color: #ffffff;
-    background-color: #05203c;
-    padding-left: 48px;
-    width: 98%;
-}
-
-.inputForm {
-    background-color: rgba(0, 0, 0, 0);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    margin: 0 auto;
-    max-width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
-
-.el-form-item {
-    background-color: #05203c;
-    display: block;
-    text-align: start;
-    padding: 10px 10px;
-    margin: 20px 0;
-    width: 100%;
-}
-
-:deep(.el-form-item__label, .el-radio) {
-    color: #ffffff !important;
-}
-
-:deep(.el-button) {
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold;
-} */ -->

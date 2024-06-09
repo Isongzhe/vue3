@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "@googlemaps/js-api-loader": "^1.16.6",
     "axios": "^1.7.2",
     "element-plus": "^2.7.4",
@@ -19,6 +20,7 @@
     "vue": "^3.4.21",
     "vue-draggable-plus": "^0.4.1",
     "vue-flatpickr-component": "^11.0.5",
+    "vue-router": "^4.3.2",
     "vue3-google-map": "^0.20.0",
     "vuedraggable": "^4.1.0"
   },
