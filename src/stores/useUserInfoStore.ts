@@ -1,72 +1,44 @@
 // src/stores/useUserInfoStore.ts
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import type { TravelTime, Airport, FormData } from "@/types";
-
-// interface TravelTime {
-//   start: string;
-//   end: string;
-// }
-
-// interface Airport {
-//   name: string;
-//   coordinates: [number, number];
-// }
-
-// interface FormData {
-//   googleMapURL: string;
-//   arrivalAirport: Airport;
-//   returnAirport: Airport;
-//   dateTimeRange: TravelTime;
-//   dateList: string[];
-//   places_name: string[];
-// }
-
-interface UserInfo {
-  name: string;
-  projectName: string;
-  formData: FormData;
-}
+import type { FormData, UserData, UserInfo } from "@/types";
 
 export const useUserInfoStore = defineStore("userInfo", () => {
   const userInfo = reactive<UserInfo>({
-    name: "",
-    projectName: "",
+    userData: {
+      name: "",
+      projectName: "",
+    },
     formData: {
       googleMapURL: "",
-      arrivalAirport: { name: "", coordinates: [0, 0] },
-      returnAirport: { name: "", coordinates: [0, 0] },
+      airportList: {
+        arrivalAirport: { name: "", coordinates: [0, 0] },
+        returnAirport: { name: "", coordinates: [0, 0] },
+      },
       dateTimeRange: { start: "", end: "" },
       dateList: [],
+    },
+    placesInfo: {
       places_name: [],
+      places: [],
     },
   });
 
-  const updateUserInfo = (data: Partial<UserInfo>) => {
-    Object.assign(userInfo, data);
+  const updateUserData = (data: Partial<UserData>) => {
+    Object.assign(userInfo.userData, data);
   };
 
   const updateFormData = (data: Partial<FormData>) => {
     Object.assign(userInfo.formData, data);
   };
-
-  const resetUserInfo = () => {
-    userInfo.name = "";
-    userInfo.projectName = "";
-    userInfo.formData = {
-      googleMapURL: "",
-      arrivalAirport: { name: "", coordinates: [0, 0] },
-      returnAirport: { name: "", coordinates: [0, 0] },
-      dateTimeRange: { start: "", end: "" },
-      dateList: [],
-      places_name: [],
-    };
+  const updatePlaceNameList = (data: string[]) => {
+    userInfo.placesInfo.places_name = data;
   };
 
   return {
     userInfo,
-    updateUserInfo,
+    updateUserData,
     updateFormData,
-    resetUserInfo,
+    updatePlaceNameList,
   };
 });

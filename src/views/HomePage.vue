@@ -28,14 +28,14 @@ const formStore = useUserInfoStore();
 
 // 只拷貝需要的屬性
 const localFormData = reactive({
-    name: formStore.userInfo.name,
-    projectName: formStore.userInfo.projectName,
+    name: formStore.userInfo.userData.name,
+    projectName: formStore.userInfo.userData.projectName,
 });
 
 const onSubmit = () => {
     console.log('submit');
     console.log(localFormData);
-    formStore.updateUserInfo(localFormData);
+    formStore.updateUserData(localFormData);
     router.push('/form');
 };
 </script>

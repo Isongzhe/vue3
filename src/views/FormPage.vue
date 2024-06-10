@@ -59,7 +59,7 @@ import { reactive, ref, watchEffect, computed } from 'vue';
 
 // 引入 Pinia store
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
-import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 Google地圖api store
+import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 mock Google地圖api store
 import type { TravelTime, Airport, FormData } from '@/types'; // 引入自定義類型
 
 // 引入 Element Plus 組件
@@ -111,18 +111,20 @@ const selectedReturnAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
 // 初始化本地表單響應式數據
 const localFormData = reactive<FormData>({
     googleMapURL: '',
-    arrivalAirport: { name: '', coordinates: [0, 0] },
-    returnAirport: { name: '', coordinates: [0, 0] },
+    airportList: {
+        arrivalAirport: { name: '', coordinates: [0, 0] },
+        returnAirport: { name: '', coordinates: [0, 0] },
+    },
     dateTimeRange: { start: '', end: '' },
     dateList: [],
-    places_name: [],
 });
 
+/* 提交表單區函式區域 */
 // 計算表單是否填寫完整
 const isFormValid = computed(() => {
     return localFormData.googleMapURL &&
-        localFormData.arrivalAirport.name &&
-        localFormData.returnAirport.name &&
+        localFormData.airportList.arrivalAirport.name &&
+        localFormData.airportList.returnAirport.name &&
         localFormData.dateTimeRange.start &&
         localFormData.dateTimeRange.end &&
         localFormData.dateList.length;
@@ -138,25 +140,33 @@ function submitForm(): void {
     }
 }
 
-// 監聽Google地圖清單連結是否正確，若正確則先發出請求
-watchEffect(() => {
+/* GoogleMap發請求拿資料函式區域 */
+// 判斷Google地圖清單連結是否正確，若正確則先發出請求去拿 places_name[]，先用模擬數據
+const validateAndFetchPlaces = async () => {
     if (localFormData.googleMapURL === '') {
         return;
     }
     const urlPattern = /^https:\/\/maps\.app\.goo\.gl\/.+$/;
     if (urlPattern.test(localFormData.googleMapURL)) {
+        // 顯示發出請求的連結
         console.log('發出請求: ' + localFormData.googleMapURL);
-
-        // 使用 Pinia store 來獲取模擬數據
-        googleMapStore.fetchPlaces();
+        // 使用 Pinia store 來獲取模擬數據，拿到 googleMapStore.places
+        await googleMapStore.fetchPlaces();
+        // 顯示模擬數據
         console.log('模擬 API 返回的數據:', googleMapStore.places);
-
         // 將模擬數據賦值給相應的變量
-        localFormData.places_name = googleMapStore.places;
+        formStore.updatePlaceNameList(googleMapStore.places);
     } else {
         console.log('Google地圖清單連結格式錯誤');
     }
+};
+
+// 監聽Google地圖清單連結是否正確，若正確則先發出請求
+watchEffect(() => {
+    validateAndFetchPlaces();
 });
+
+/* 更新日期列表與時間函式區域 */
 // 監聽日期區間與時間區間變化，拆解成開始與結束時間
 watchEffect(() => {
     const [start, end] = dateRange.value.split(' to ');
@@ -185,6 +195,7 @@ watchEffect(() => {
     localFormData.dateList = dateList.value;
 });
 
+/* 更新機場函式區域 */
 // 監聽抵達機場與回程機場變化，更新表單資料
 function handleArrivalAirportChange(value: string): void {
     const selectedAirport = airportGroups.value.flatMap(group => group.options).find(airport => airport.name === value);
@@ -192,7 +203,7 @@ function handleArrivalAirportChange(value: string): void {
         const { name, coordinates } = selectedAirport;
         console.log('選擇的抵達機場:', selectedAirport);
         selectedArrivalAirport.value = { name, coordinates: coordinates as [number, number] };
-        localFormData.arrivalAirport = { name, coordinates: coordinates as [number, number] };
+        localFormData.airportList.arrivalAirport = { name, coordinates: coordinates as [number, number] };
     }
 }
 function handleReturnAirportChange(value: string): void {
@@ -201,7 +212,7 @@ function handleReturnAirportChange(value: string): void {
         const { name, coordinates } = selectedAirport;
         console.log('選擇的回程機場:', selectedAirport);
         selectedReturnAirport.value = { name, coordinates: coordinates as [number, number] };
-        localFormData.returnAirport = { name, coordinates: coordinates as [number, number] };
+        localFormData.airportList.returnAirport = { name, coordinates: coordinates as [number, number] };
     }
 }
 </script>
