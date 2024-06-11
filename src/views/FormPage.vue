@@ -61,7 +61,7 @@ import { reactive, ref, watchEffect, computed } from 'vue';
 // 引入 Pinia store
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
 import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 mock Google地圖api store
-import type { TravelTime, Airport, FormData } from '@/types'; // 引入自定義類型
+import type { TravelTime, FormData, Place, AirportOptionGroup } from '@/types'; // 引入自定義類型
 
 // 引入 Element Plus 組件
 import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElOptionGroup, ElButton, ElTimeSelect } from 'element-plus';
@@ -80,127 +80,99 @@ const timePickerOptions = {
     end: '23:45',
 };
 
-const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
-const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
-
-// 定義機場數據
-[
-    {
-        "place_id": "ChIJVze90XnzImARoRp3YqEpbtU",
-        "name": "成田國際機場",
-        "geometry": {
-            "lat": 35.770178,
-            "lng": 140.3843215
-        },
-        "formattedAddress": "1-1 Furugome, Narita, Chiba 282-0004日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    },
-    {
-        "place_id": "ChIJ45IxpAtkGGAR3_hG0anDMg0",
-        "name": "羽田機場 (東京國際機場)",
-        "geometry": {
-            "lat": 35.5493932,
-            "lng": 139.7798386
-        },
-        "formattedAddress": "Hanedakuko, Ota City, Tokyo 144-0041日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    },
-    {
-        "place_id": "ChIJ9_rNIxO5AGARiI-QjZ-ncfE",
-        "name": "關西國際機場",
-        "geometry": {
-            "lat": 34.4320333,
-            "lng": 135.2366945
-        },
-        "formattedAddress": "1 Senshukukokita, Izumisano, Osaka 549-0001日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    },
-    {
-        "place_id": "ChIJzynM7ZN9BGARJQAsbih9mEI",
-        "name": "中部國際機場",
-        "geometry": {
-            "lat": 34.85884,
-            "lng": 136.8115355
-        },
-        "formattedAddress": "1 Chome-1 Centrair, Tokoname, Aichi 479-0881日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    },
-    {
-        "place_id": "ChIJ3RpcnUUgdV8R9oH25Xxguho",
-        "name": "新千歲機場",
-        "geometry": {
-            "lat": 42.7791292,
-            "lng": 141.6866374
-        },
-        "formattedAddress": "Bibi, Chitose, Hokkaido 066-0012日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    },
-    {
-        "place_id": "ChIJrQFpQhaQQTURtx9OWEZ_5hY",
-        "name": "福岡國際機場",
-        "geometry": {
-            "lat": 33.5845874,
-            "lng": 130.4438542
-        },
-        "formattedAddress": "778-1 Shimousui, Hakata Ward, Fukuoka, 812-0003日本",
-        "types": [
-            "airport",
-            "point_of_interest",
-            "establishment"
-        ]
-    }
-]
-const airportGroups = ref([
+// 定義機場數據(顯示在下拉選單中)
+const airportGroups = ref<AirportOptionGroup[]>([
     {
         label: '東京',
         options: [
-            { name: '成田國際機場(NRT)', coordinates: [35.7641817, 140.3847858] },
-            { name: '羽田機場(東京國際機場)[HND]', coordinates: [35.5493932, 139.7798386] },
+            {
+                "place_id": "ChIJVze90XnzImARoRp3YqEpbtU",
+                "name": "成田國際機場[NRT]",
+                "geometry": {
+                    "lat": 35.770178,
+                    "lng": 140.3843215
+                },
+                "formattedAddress": "1-1 Furugome, Narita, Chiba 282-0004日本",
+            },
+            {
+                "place_id": "ChIJ45IxpAtkGGAR3_hG0anDMg0",
+                "name": "羽田機場 (東京國際機場)[HND]",
+                "geometry": {
+                    "lat": 35.5493932,
+                    "lng": 139.7798386
+                },
+                "formattedAddress": "Hanedakuko, Ota City, Tokyo 144-0041日本",
+            },
         ],
     },
     {
         label: '其他',
         options: [
-            { name: '關西國際機場(KIX)', coordinates: [34.4320333, 135.2366945] },
-            { name: '中部國際機場(NGO)', coordinates: [34.85884, 136.8115355] },
-            { name: '新千歲機場(CTS)', coordinates: [42.7791292, 141.6866374] },
-            { name: '福岡機場(FUK)', coordinates: [33.5845874, 130.4438542] },
+            {
+                "place_id": "ChIJ9_rNIxO5AGARiI-QjZ-ncfE",
+                "name": "關西國際機場[KIX]",
+                "geometry": {
+                    "lat": 34.4320333,
+                    "lng": 135.2366945
+                },
+                "formattedAddress": "1 Senshukukokita, Izumisano, Osaka 549-0001日本",
+            },
+            {
+                "place_id": "ChIJzynM7ZN9BGARJQAsbih9mEI",
+                "name": "中部國際機場[NGO]",
+                "geometry": {
+                    "lat": 34.85884,
+                    "lng": 136.8115355
+                },
+                "formattedAddress": "1 Chome-1 Centrair, Tokoname, Aichi 479-0881日本",
+            },
+            {
+                "place_id": "ChIJ3RpcnUUgdV8R9oH25Xxguho",
+                "name": "新千歲機場[CTS]",
+                "geometry": {
+                    "lat": 42.7791292,
+                    "lng": 141.6866374
+                },
+                "formattedAddress": "Bibi, Chitose, Hokkaido 066-0012日本",
+            },
+            {
+                "place_id": "ChIJrQFpQhaQQTURtx9OWEZ_5hY",
+                "name": "福岡國際機場[FUK]",
+                "geometry": {
+                    "lat": 33.5845874,
+                    "lng": 130.4438542
+                },
+                "formattedAddress": "778-1 Shimousui, Hakata Ward, Fukuoka, 812-0003日本",
+            }
         ],
     },
 ]);
 
+const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
+const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
+
 // 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
 const dateRange = ref<string>('');
 const timeRange = reactive<TravelTime>({ start: '', end: '' });
-const selectedArrivalAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
-const selectedReturnAirport = ref<Airport>({ name: '', coordinates: [0, 0] });
+const defaultAirport: Place = {
+    place_id: '',
+    name: '',
+    geometry: {
+        lat: 0,
+        lng: 0
+    },
+    formattedAddress: '',
+};
+
+const selectedArrivalAirport = ref<Place>({ ...defaultAirport });
+const selectedReturnAirport = ref<Place>({ ...defaultAirport });
 
 // 初始化本地表單響應式數據
 const localFormData = reactive<FormData>({
     googleMapURL: '',
     airportList: {
-        arrivalAirport: { name: '', coordinates: [0, 0] },
-        returnAirport: { name: '', coordinates: [0, 0] },
+        arrivalAirport: { ...defaultAirport },
+        returnAirport: { ...defaultAirport },
     },
     dateTimeRange: { start: '', end: '' },
     dateList: [],
@@ -287,23 +259,30 @@ watchEffect(() => {
 
 /* 更新機場函式區域 */
 // 監聽抵達機場與回程機場變化，更新表單資料
-function handleArrivalAirportChange(value: string): void {
-    const selectedAirport = airportGroups.value.flatMap(group => group.options).find(airport => airport.name === value);
+function handleAirportChange(value: string, isArrival: boolean): void {
+    const selectedAirport = airportGroups.value
+        .flatMap(group => group.options) // 將二維數組轉為一維數組
+        .find(airport => airport.name === value); // 找到選擇的機場
+
     if (selectedAirport) {
-        const { name, coordinates } = selectedAirport;
-        console.log('選擇的抵達機場:', selectedAirport);
-        selectedArrivalAirport.value = { name, coordinates: coordinates as [number, number] };
-        localFormData.airportList.arrivalAirport = { name, coordinates: coordinates as [number, number] };
+        console.log(`選擇的${isArrival ? '抵達' : '回程'}機場:`, selectedAirport);
+
+        if (isArrival) {
+            selectedArrivalAirport.value = selectedAirport;
+            localFormData.airportList.arrivalAirport = selectedAirport;
+        } else {
+            selectedReturnAirport.value = selectedAirport;
+            localFormData.airportList.returnAirport = selectedAirport;
+        }
     }
 }
+// 抵達機場變化
+function handleArrivalAirportChange(value: string): void {
+    handleAirportChange(value, true);
+}
+// 回程機場變化
 function handleReturnAirportChange(value: string): void {
-    const selectedAirport = airportGroups.value.flatMap(group => group.options).find(airport => airport.name === value);
-    if (selectedAirport) {
-        const { name, coordinates } = selectedAirport;
-        console.log('選擇的回程機場:', selectedAirport);
-        selectedReturnAirport.value = { name, coordinates: coordinates as [number, number] };
-        localFormData.airportList.returnAirport = { name, coordinates: coordinates as [number, number] };
-    }
+    handleAirportChange(value, false);
 }
 </script>
 
@@ -359,8 +338,6 @@ function handleReturnAirportChange(value: string): void {
 .button>* {
     justify-content: center;
 }
-
-
 
 
 /* 覆蓋掉 Element Plus 的樣式 */

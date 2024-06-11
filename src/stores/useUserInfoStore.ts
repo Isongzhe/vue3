@@ -5,6 +5,16 @@ import type { FormData, UserData, UserInfo, Place } from "@/types";
 import { mockPlaceInfoList } from "@/api/mockPlaceInfoList";
 
 export const useUserInfoStore = defineStore("userInfo", () => {
+  const defaultAirport: Place = {
+    place_id: "",
+    name: "",
+    geometry: {
+      lat: 0,
+      lng: 0,
+    },
+    formattedAddress: "",
+  };
+
   const userInfo = reactive<UserInfo>({
     userData: {
       name: "",
@@ -13,8 +23,8 @@ export const useUserInfoStore = defineStore("userInfo", () => {
     formData: {
       googleMapURL: "",
       airportList: {
-        arrivalAirport: { name: "", coordinates: [0, 0] },
-        returnAirport: { name: "", coordinates: [0, 0] },
+        arrivalAirport: { ...defaultAirport },
+        returnAirport: { ...defaultAirport },
       },
       dateTimeRange: { start: "", end: "" },
       dateList: [],

@@ -2,33 +2,36 @@ export interface TravelTime {
   start: string;
   end: string;
 }
-
-export interface Airport {
-  name: string;
-  coordinates: [number, number];
-}
+// export interface Airport {
+//   name: string;
+//   coordinates: [number, number];
+// }
 
 export interface FormData {
   googleMapURL: string;
   airportList: {
-    arrivalAirport: Airport;
-    returnAirport: Airport;
+    arrivalAirport: Place;
+    returnAirport: Place;
   };
   dateTimeRange: TravelTime;
   dateList: string[];
 }
 
+export interface Geometry {
+  lat: number;
+  lng: number;
+}
 export interface Place {
   place_id: string;
   name: string;
-  geometry: {
-    lat: number;
-    lng: number;
-  };
+  geometry: Geometry;
   formattedAddress: string;
-  types: string[];
+  types?: string[];
 }
-
+export interface AirportOptionGroup {
+  label: string;
+  options: Place[];
+}
 export interface PlacesInfo {
   places_name: string[];
   places: Place[];

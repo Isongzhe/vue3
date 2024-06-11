@@ -2,6 +2,55 @@
 export function mockPlaceInfoList() {
   return [
     {
+      place_id: "ChIJPR3Mpx2MGGARl5yyxi5j97k",
+      name: "amiami Akihabara Figure Tower",
+      geometry: {
+        lat: 35.6995071,
+        lng: 139.7709188,
+      },
+      formattedAddress:
+        "日本〒101-0021 Tokyo, Chiyoda City, Sotokanda, 1 Chome−11−5 スーパービル3F・4F 秋葉原ビル",
+      types: ["store", "point_of_interest", "establishment"],
+    },
+    {
+      place_id: "ChIJyQWm1MaOGGARZojTN0Z3AO4",
+      name: "Café de Raak",
+      geometry: {
+        lat: 35.7118141,
+        lng: 139.796278,
+      },
+      formattedAddress: "1 Chome-20-12 Asakusa, Taito City, Tokyo 111-0032日本",
+      types: ["cafe", "store", "point_of_interest", "food", "establishment"],
+    },
+    {
+      place_id: "ChIJlSzT1caOGGAR1XWIYePnYGQ",
+      name: "淺草花月堂 雷門店",
+      geometry: {
+        lat: 35.7115208,
+        lng: 139.7960479,
+      },
+      formattedAddress: "1 Chome-18-11 Asakusa, Taito City, Tokyo 111-0032日本",
+      types: [
+        "bakery",
+        "store",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment",
+      ],
+    },
+    {
+      place_id: "ChIJhwW4SB2MGGARb9DDifTbMTg",
+      name: "amiami 秋葉原無線電會館店",
+      geometry: {
+        lat: 35.6979933,
+        lng: 139.7719472,
+      },
+      formattedAddress:
+        "日本〒101-0021 Tokyo, Chiyoda City, Sotokanda, 1 Chome−15−16 秋葉原ラジオ会館新本館 ４F",
+      types: ["store", "point_of_interest", "establishment"],
+    },
+    {
       place_id: "ChIJscDhJ4SLGGARbx0GlzPi9ng",
       name: "澀谷SCRAMBLE SQUARE",
       geometry: {
@@ -45,8 +94,8 @@ export function mockPlaceInfoList() {
         "pet_store",
         "cafe",
         "park",
-        "point_of_interest",
         "store",
+        "point_of_interest",
         "food",
         "establishment",
       ],
@@ -61,8 +110,8 @@ export function mockPlaceInfoList() {
       formattedAddress:
         "日本〒810-0021 Fukuoka, Chuo Ward, Imaizumi, 1 Chome−25−1 Bブロック内1･2F ビックカメラ天神 1号館",
       types: [
-        "electronics_store",
         "movie_rental",
+        "electronics_store",
         "point_of_interest",
         "store",
         "establishment",
@@ -114,7 +163,7 @@ export function mockPlaceInfoList() {
       },
       formattedAddress:
         "日本〒907-0002 Okinawa, Ishigaki, Maezato, 387-3 ＦＯＯＤＢＡＳＥ2階",
-      types: ["restaurant", "point_of_interest", "food", "establishment"],
+      types: ["restaurant", "food", "point_of_interest", "establishment"],
     },
     {
       place_id: "ChIJVVWgTR2MGGAR67BiGTvaImI",
@@ -128,8 +177,8 @@ export function mockPlaceInfoList() {
       types: [
         "movie_rental",
         "book_store",
-        "food",
         "store",
+        "food",
         "point_of_interest",
         "establishment",
       ],
@@ -162,26 +211,6 @@ export function mockPlaceInfoList() {
       ],
     },
     {
-      place_id: "ChIJ45IxpAtkGGAR3_hG0anDMg0",
-      name: "羽田機場 (東京國際機場)",
-      geometry: {
-        lat: 35.5493932,
-        lng: 139.7798386,
-      },
-      formattedAddress: "Hanedakuko, Ota City, Tokyo 144-0041日本",
-      types: ["airport", "point_of_interest", "establishment"],
-    },
-    {
-      place_id: "ChIJVze90XnzImARoRp3YqEpbtU",
-      name: "成田國際機場",
-      geometry: {
-        lat: 35.770178,
-        lng: 140.3843215,
-      },
-      formattedAddress: "1-1 Furugome, Narita, Chiba 282-0004日本",
-      types: ["airport", "point_of_interest", "establishment"],
-    },
-    {
       place_id: "ChIJo24g-i-MGGARlboTg0kH5DA",
       name: "東京大學",
       geometry: {
@@ -200,21 +229,6 @@ export function mockPlaceInfoList() {
       },
       formattedAddress: "6 Chome-10 Ueno, Taito City, Tokyo 110-0005日本",
       types: ["tourist_attraction", "point_of_interest", "establishment"],
-    },
-    {
-      place_id: "ChIJf2129yiMGGAR9I6Yoe-1uHY",
-      name: "上野動物園 Ueno Zoo",
-      geometry: {
-        lat: 35.7160153,
-        lng: 139.772882,
-      },
-      formattedAddress: "9-83 Uenokoen, Taito City, Tokyo 110-8711日本",
-      types: [
-        "zoo",
-        "tourist_attraction",
-        "point_of_interest",
-        "establishment",
-      ],
     },
     {
       place_id: "ChIJhXu-qJGPGGARJM_jyq0XHmE",
@@ -237,8 +251,8 @@ export function mockPlaceInfoList() {
       formattedAddress: "1 Chome Marunouchi, Chiyoda City, Tokyo 100-0005日本",
       types: [
         "transit_station",
-        "subway_station",
         "train_station",
+        "subway_station",
         "point_of_interest",
         "establishment",
       ],
@@ -259,21 +273,6 @@ export function mockPlaceInfoList() {
       ],
     },
     {
-      place_id: "ChIJEX3XFIOOGGAR3XdJvRjWLyM",
-      name: "東京國立博物館",
-      geometry: {
-        lat: 35.7188351,
-        lng: 139.7765215,
-      },
-      formattedAddress: "13-9 Uenokoen, Taito City, Tokyo 110-8712日本",
-      types: [
-        "tourist_attraction",
-        "museum",
-        "point_of_interest",
-        "establishment",
-      ],
-    },
-    {
       place_id: "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
       name: "東京鐵塔",
       geometry: {
@@ -283,10 +282,10 @@ export function mockPlaceInfoList() {
       formattedAddress:
         "4 Chome-2-8 Shibakoen, Minato City, Tokyo 105-0011日本",
       types: [
-        "tourist_attraction",
+        "art_gallery",
         "shopping_mall",
         "landmark",
-        "art_gallery",
+        "tourist_attraction",
         "point_of_interest",
         "establishment",
       ],
@@ -317,9 +316,9 @@ export function mockPlaceInfoList() {
         "4 Chome-3-1 Sotokanda, Chiyoda City, Tokyo 101-0021日本",
       types: [
         "book_store",
+        "movie_rental",
         "point_of_interest",
         "store",
-        "movie_rental",
         "establishment",
       ],
     },
