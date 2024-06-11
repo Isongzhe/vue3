@@ -1,7 +1,8 @@
 // src/stores/useUserInfoStore.ts
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import type { FormData, UserData, UserInfo } from "@/types";
+import type { FormData, UserData, UserInfo, Place } from "@/types";
+import { mockPlaceInfoList } from "@/api/mockPlaceInfoList";
 
 export const useUserInfoStore = defineStore("userInfo", () => {
   const userInfo = reactive<UserInfo>({
@@ -34,11 +35,15 @@ export const useUserInfoStore = defineStore("userInfo", () => {
   const updatePlaceNameList = (data: string[]) => {
     userInfo.placesInfo.places_name = data;
   };
+  const updatePlaceList = () => {
+    userInfo.placesInfo.places = mockPlaceInfoList();
+  };
 
   return {
     userInfo,
     updateUserData,
     updateFormData,
     updatePlaceNameList,
+    updatePlaceList,
   };
 });

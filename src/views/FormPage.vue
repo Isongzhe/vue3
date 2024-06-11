@@ -48,6 +48,7 @@
             <el-button type="primary" @click="submitForm">提交</el-button>
         </el-form-item>
     </el-form>
+    <!-- <textarea>{{ formStore.userInfo }}</textarea> -->
 </template>
 
 <script lang="ts" setup>
@@ -83,21 +84,107 @@ const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
 const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
 
 // 定義機場數據
+[
+    {
+        "place_id": "ChIJVze90XnzImARoRp3YqEpbtU",
+        "name": "成田國際機場",
+        "geometry": {
+            "lat": 35.770178,
+            "lng": 140.3843215
+        },
+        "formattedAddress": "1-1 Furugome, Narita, Chiba 282-0004日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    },
+    {
+        "place_id": "ChIJ45IxpAtkGGAR3_hG0anDMg0",
+        "name": "羽田機場 (東京國際機場)",
+        "geometry": {
+            "lat": 35.5493932,
+            "lng": 139.7798386
+        },
+        "formattedAddress": "Hanedakuko, Ota City, Tokyo 144-0041日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    },
+    {
+        "place_id": "ChIJ9_rNIxO5AGARiI-QjZ-ncfE",
+        "name": "關西國際機場",
+        "geometry": {
+            "lat": 34.4320333,
+            "lng": 135.2366945
+        },
+        "formattedAddress": "1 Senshukukokita, Izumisano, Osaka 549-0001日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    },
+    {
+        "place_id": "ChIJzynM7ZN9BGARJQAsbih9mEI",
+        "name": "中部國際機場",
+        "geometry": {
+            "lat": 34.85884,
+            "lng": 136.8115355
+        },
+        "formattedAddress": "1 Chome-1 Centrair, Tokoname, Aichi 479-0881日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    },
+    {
+        "place_id": "ChIJ3RpcnUUgdV8R9oH25Xxguho",
+        "name": "新千歲機場",
+        "geometry": {
+            "lat": 42.7791292,
+            "lng": 141.6866374
+        },
+        "formattedAddress": "Bibi, Chitose, Hokkaido 066-0012日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    },
+    {
+        "place_id": "ChIJrQFpQhaQQTURtx9OWEZ_5hY",
+        "name": "福岡國際機場",
+        "geometry": {
+            "lat": 33.5845874,
+            "lng": 130.4438542
+        },
+        "formattedAddress": "778-1 Shimousui, Hakata Ward, Fukuoka, 812-0003日本",
+        "types": [
+            "airport",
+            "point_of_interest",
+            "establishment"
+        ]
+    }
+]
 const airportGroups = ref([
     {
         label: '東京',
         options: [
-            { name: '成田機場(NRT)', coordinates: [35.7641817, 140.3847858] },
-            { name: '羽田機場(HND)', coordinates: [35.5493932, 139.7798386] },
+            { name: '成田國際機場(NRT)', coordinates: [35.7641817, 140.3847858] },
+            { name: '羽田機場(東京國際機場)[HND]', coordinates: [35.5493932, 139.7798386] },
         ],
     },
     {
         label: '其他',
         options: [
-            { name: '關西國際機場(KIX)', coordinates: [34.434722, 135.244167] },
-            { name: '中部國際機場(NGO)', coordinates: [34.858333, 136.804722] },
-            { name: '新千歲機場(CTS)', coordinates: [42.775278, 141.6925] },
-            { name: '福岡機場(FUK)', coordinates: [33.585, 130.45] },
+            { name: '關西國際機場(KIX)', coordinates: [34.4320333, 135.2366945] },
+            { name: '中部國際機場(NGO)', coordinates: [34.85884, 136.8115355] },
+            { name: '新千歲機場(CTS)', coordinates: [42.7791292, 141.6866374] },
+            { name: '福岡機場(FUK)', coordinates: [33.5845874, 130.4438542] },
         ],
     },
 ]);
@@ -134,6 +221,9 @@ function submitForm(): void {
     if (isFormValid.value) {
         console.log('表單提交成功');
         formStore.updateFormData(localFormData);
+        formStore.updatePlaceList();
+        console.log('更新後的表單數據:', formStore.userInfo);
+        localStorage.setItem('userInfo', JSON.stringify(formStore.userInfo));
     }
     else {
         alert('請填寫完整表單資訊');

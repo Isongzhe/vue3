@@ -29,19 +29,7 @@
 <script setup lang="ts">
 import { ElCard, ElIcon } from 'element-plus';
 import { Location, Star } from '@element-plus/icons-vue';
-
-
-
-interface Place {
-    place_id: string;
-    name: string;
-    geometry: {
-        lat: number;
-        lng: number;
-    };
-    formattedAddress: string;
-    types: string[];
-}
+import type { Place } from '@/types';
 
 const places: Place[] = [
     {
