@@ -2,9 +2,9 @@
     <div class="HomePage">
         <div class="infoTextArea">
             <h3>這是一個輕量化的網站，專為用戶規劃日本旅行而設計</h3>
-            <h3>導入您的Google地圖清單，快速生成每日行程規劃</h3>
+            <h3>導入您的Google地圖清單，快速生成每日行程規劃吧</h3>
         </div>
-        <div class="inputForm">
+        <div class="userForm">
             <el-form-item label="用戶名稱: ">
                 <el-input v-model="localFormData.name" />
             </el-form-item>
@@ -22,6 +22,7 @@
 import { reactive } from 'vue';
 import { useUserInfoStore } from '@/stores/useUserInfoStore';
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 
 const router = useRouter(); //使用 router
 const formStore = useUserInfoStore(); //使用 pinia store
@@ -40,13 +41,18 @@ const isFormValid = () => {
 
 const onSubmit = (): void => {
     if (isFormValid()) {
-        // console.log('submit');
-        // console.log(localFormData);
+        ElMessage({
+            message: '用戶資料提交成功',
+            type: 'success',
+        })
         formStore.updateUserData(localFormData); //更新 pinia formData
         router.push('/form'); //導向到 form 頁面
     }
     else {
-        alert('請填寫完整用戶資訊');
+        ElMessage({
+            message: '請填寫完整用戶資料',
+            type: 'warning',
+        })
     }
 };
 </script>
@@ -67,39 +73,43 @@ const onSubmit = (): void => {
 .infoTextArea {
     position: absolute;
     top: 50%;
-    left: 10%;
+    left: 5%;
     transform: translate(0, -50%);
     background-color: #05203c;
     opacity: 0.8;
     border-radius: 12px;
     padding: 20px;
     color: #ffffff;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
-    border: 2px solid #ffffff;
+    /* border: 2px solid #ffffff; */
+    box-shadow: 0 0 0 1px;
     border-radius: 12px;
-
+    box-sizing: border-box;
+    max-width: 600px;
 }
 
-.inputForm {
+.userForm {
     position: absolute;
     top: 50%;
-    right: 10%;
+    right: 8%;
     transform: translate(0, -50%);
-
     background-color: #05203c;
     opacity: 0.9;
     color: #ffffff;
-    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px;
     border-radius: 12px;
     max-width: 30%;
     height: 180px;
     padding: 20px;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px;
+    box-sizing: border-box;
+    max-width: 300px;
 }
 
-:deep(.el-form-item__content) {
+
+.userForm:deep(.el-form-item__content) {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -109,13 +119,13 @@ const onSubmit = (): void => {
     border: 3px solid #ffffff;
 } */
 
-:deep(.el-form-item__label) {
+.userForm:deep(.el-form-item__label) {
     color: #ffffff !important;
 }
 
-:deep(.el-button) {
+.userForm:deep(.el-button) {
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 14px;
 }
 </style>

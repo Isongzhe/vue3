@@ -3,13 +3,24 @@
         <div class="card">
             <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
             <el-form-item>
-                <p>Google地圖清單連結:</p>
+                <h3>
+                    <el-icon>
+                        <MapLocation />
+                    </el-icon>Google地圖清單連結:
+                </h3>
+                <a href="https://www.google.com.tw/maps" target="_blank">
+                    <el-button size="small" type="primary" :link="true">
+                        打開 Google 地圖
+                    </el-button>
+                </a>
                 <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
+                <el-text class="mx-1" type="warning">※請移除機場以及新增所有飯店到清單內</el-text>
             </el-form-item>
         </div>
         <div class="card">
+            <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
             <div class="card-item">
-                <el-form-item label="抵達機場">
+                <el-form-item label="抵達機場: ">
                     <el-select v-model="selectedArrivalAirport.name" placeholder="請選擇抵達機場"
                         @change="handleArrivalAirportChange">
                         <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
@@ -18,7 +29,7 @@
                         </el-option-group>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="回程機場">
+                <el-form-item label="回程機場: ">
                     <el-select v-model="selectedReturnAirport.name" placeholder="請選擇回程機場"
                         @change="handleReturnAirportChange">
                         <el-option-group v-for="(group, index) in airportGroups" :key="index" :label="group.label">
@@ -30,25 +41,28 @@
             </div>
         </div>
         <div class="card">
+            <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
             <div class="card-item">
-                <el-form-item label="請輸入旅遊抵達日期與離境日期">
+                <el-form-item label="請輸入旅遊抵達日期與離境日期: ">
                     <flat-pickr v-model="dateRange" :config="config" />
                 </el-form-item>
-                <el-form-item label="請輸入開始旅行的時間">
+                <el-form-item label="請輸入開始旅行的時間: ">
                     <el-time-select v-model="timeRange.start" placeholder="選擇時間" :start="timePickerOptions.start"
                         :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                    <el-text class="mx-1" type="warning">※離開機場時間為準</el-text>
                 </el-form-item>
-                <el-form-item label="請輸入結束旅行的時間">
+                <el-form-item label="請輸入結束旅行的時間: ">
                     <el-time-select v-model="timeRange.end" placeholder="選擇時間" :start="timePickerOptions.start"
                         :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                    <el-text class="mx-1" type="warning">※抵達機場時間為準</el-text>
+                    <el-text class="mx-1" type="danger">『建議提早三小時』</el-text>
                 </el-form-item>
             </div>
         </div>
         <el-form-item class="button">
-            <el-button type="primary" @click="submitForm">提交</el-button>
+            <el-button type="primary" @click="submitForm" size="large">提交</el-button>
         </el-form-item>
     </el-form>
-    <!-- <textarea>{{ formStore.userInfo }}</textarea> -->
 </template>
 
 <script lang="ts" setup>
@@ -65,7 +79,9 @@ import type { TravelTime, FormData, Place, AirportOptionGroup } from '@/types'; 
 
 // 引入 Element Plus 組件
 import { ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElOptionGroup, ElButton, ElTimeSelect } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import 'element-plus/dist/index.css'; // 引入 Element Plus CSS
+import { MapLocation } from '@element-plus/icons-vue'; //引入icon
 
 // 設置 flatpickr 的選項
 const config: Partial<BaseOptions> = {
@@ -87,7 +103,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
         options: [
             {
                 "place_id": "ChIJVze90XnzImARoRp3YqEpbtU",
-                "name": "成田國際機場[NRT]",
+                "name": "成田國際機場 [NRT]",
                 "geometry": {
                     "lat": 35.770178,
                     "lng": 140.3843215
@@ -96,7 +112,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
             },
             {
                 "place_id": "ChIJ45IxpAtkGGAR3_hG0anDMg0",
-                "name": "羽田機場 (東京國際機場)[HND]",
+                "name": "羽田機場 (東京國際機場) [HND]",
                 "geometry": {
                     "lat": 35.5493932,
                     "lng": 139.7798386
@@ -110,7 +126,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
         options: [
             {
                 "place_id": "ChIJ9_rNIxO5AGARiI-QjZ-ncfE",
-                "name": "關西國際機場[KIX]",
+                "name": "關西國際機場 [KIX]",
                 "geometry": {
                     "lat": 34.4320333,
                     "lng": 135.2366945
@@ -119,7 +135,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
             },
             {
                 "place_id": "ChIJzynM7ZN9BGARJQAsbih9mEI",
-                "name": "中部國際機場[NGO]",
+                "name": "中部國際機場 [NGO]",
                 "geometry": {
                     "lat": 34.85884,
                     "lng": 136.8115355
@@ -128,7 +144,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
             },
             {
                 "place_id": "ChIJ3RpcnUUgdV8R9oH25Xxguho",
-                "name": "新千歲機場[CTS]",
+                "name": "新千歲機場 [CTS]",
                 "geometry": {
                     "lat": 42.7791292,
                     "lng": 141.6866374
@@ -137,7 +153,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
             },
             {
                 "place_id": "ChIJrQFpQhaQQTURtx9OWEZ_5hY",
-                "name": "福岡國際機場[FUK]",
+                "name": "福岡國際機場 [FUK]",
                 "geometry": {
                     "lat": 33.5845874,
                     "lng": 130.4438542
@@ -188,6 +204,7 @@ const isFormValid = computed(() => {
         localFormData.dateTimeRange.end &&
         localFormData.dateList.length;
 });
+
 // 提交表單，有空值時提示使用者，提交表單時更新 Pinia userInfoStore 的數據
 function submitForm(): void {
     if (isFormValid.value) {
@@ -195,10 +212,17 @@ function submitForm(): void {
         formStore.updateFormData(localFormData);
         formStore.updatePlaceList();
         console.log('更新後的表單數據:', formStore.userInfo);
-        localStorage.setItem('userInfo', JSON.stringify(formStore.userInfo));
+        localStorage.setItem('userInfo', JSON.stringify(formStore.userInfo)); //存成本地端資料
+        ElMessage({
+            message: '表單提交成功',
+            type: 'success',
+        });
     }
     else {
-        alert('請填寫完整表單資訊');
+        ElMessage({
+            message: '表單內容請填寫完全',
+            type: 'warning',
+        })
     }
 }
 
@@ -213,12 +237,28 @@ const validateAndFetchPlaces = async () => {
         // 顯示發出請求的連結
         console.log('發出請求: ' + localFormData.googleMapURL);
         // 使用 Pinia store 來獲取模擬數據，拿到 googleMapStore.places
-        await googleMapStore.fetchPlaces();
-        // 顯示模擬數據
-        console.log('模擬 API 返回的數據:', googleMapStore.places);
-        // 將模擬數據賦值給相應的變量
-        formStore.updatePlaceNameList(googleMapStore.places);
+        try {
+            await googleMapStore.fetchPlaces();
+            // 顯示模擬數據
+            console.log('模擬 API 返回的數據:', googleMapStore.places);
+            // 將模擬數據賦值給相應的變量
+            formStore.updatePlaceNameList(googleMapStore.places);
+            ElMessage({
+                message: 'Google地圖清單已成功讀取',
+                type: 'success',
+            })
+        }
+        catch {
+            ElMessage({
+                message: 'Google地圖清單讀取失敗，請再貼一次Google地圖清單連結',
+                type: 'error',
+            })
+        }
     } else {
+        ElMessage({
+            message: 'Google地圖清單連結格式錯誤',
+            type: 'warning',
+        })
         console.log('Google地圖清單連結格式錯誤');
     }
 };
@@ -292,31 +332,36 @@ function handleReturnAirportChange(value: string): void {
 @import 'element-plus/dist/index.css';
 
 /* 自定義樣式 */
-* {
+/* * {
     border: 2px solid white;
-}
+} */
 
 .inputForm {
     background-color: #05203c;
     opacity: 0.95;
     color: #ffffff;
     border-radius: 12px;
-    padding: 10px;
+    padding: 10px 10px;
     font-weight: 700;
     width: 85%;
     margin: 20px auto;
+    box-sizing: border-box;
+    /* 讓元素的寬度包含 padding 和 border */
 }
 
-/* .inputForm>* {
-    border: 2px solid white;
-} */
+
+.inputForm>* {
+    border: 1px solid 24445fc3;
+    margin-bottom: 20px;
+}
 
 .el-form-item {
-    background-color: #05203c;
+    /* background-color: var(--form-item-bg-color, #05203c); */
     display: block;
     text-align: start;
-    padding: 10px 10px;
-    margin: 20px 0;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 5px auto;
     width: 100%;
 }
 
@@ -325,13 +370,22 @@ function handleReturnAirportChange(value: string): void {
     justify-content: center;
     align-items: center;
     max-width: 100%;
-    margin: 10px auto;
+    background-color: #24445fc3;
+    border-radius: 12px;
 }
 
 .card>* {
     flex: 1;
     max-width: 49%;
     box-sizing: border-box;
+    margin: 10px 10px;
+    border-radius: 12px;
+    /* border: 2px solid white; */
+    background-color: #05203c;
+}
+
+.googleMapTag {
+    display: block;
 }
 
 /* 按鍵元素置中 */
@@ -339,36 +393,59 @@ function handleReturnAirportChange(value: string): void {
     justify-content: center;
 }
 
-
 /* 覆蓋掉 Element Plus 的樣式 */
 /* 表單標籤的樣式 */
-:deep(.el-form-item__label) {
+.inputForm:deep(.el-form-item__label) {
     color: #ffffff !important;
 }
 
 /* 時間輸入框的樣式 */
-:deep(.el-input__inner) {
+.inputForm:deep(.el-input__inner) {
     color: black !important;
 }
 
 /* 下拉選單的樣式 */
-:deep(.el-select__caret) {
+.inputForm:deep(.el-select__caret) {
     color: #ffffff !important;
 }
 
-:deep(.el-select-dropdown__item, .el-select-dropdown__item:hover) {
+.inputForm:deep(.el-select-dropdown__item, .el-select-dropdown__item:hover) {
     color: black !important;
     background-color: #ffffff !important;
 }
 
 /* ratio選項按鈕的樣式 */
-:deep(.el-radio__label) {
+.inputForm:deep(.el-radio__label) {
     color: #ffffff !important;
 }
 
 /* 按鈕的樣式 */
-:deep(.el-button) {
+.inputForm:deep(.el-button) {
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+}
+
+.inputForm:deep(.flatpickr-input) {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    color: #606266;
+    font-size: 14px;
+    line-height: 24px;
+    min-height: 32px;
+    display: block;
+    width: 100%;
+    align-items: center;
+    text-align: left;
+    border-radius: 4px;
+    padding: 4px 12px;
+    box-shadow: 0 0 0 1px;
+}
+
+.inputForm:deep(.el-icon) {
+    margin-right: 5px;
+}
+
+.inputForm:deep(.el-text) {
+    margin-top: 5px;
 }
 </style>

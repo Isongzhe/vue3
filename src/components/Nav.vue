@@ -2,12 +2,8 @@
     <nav>
         <div class="marker">
             <h2>Traveler 旅行者</h2>
-            <p>簡單且快速的安排行程吧!</p>
+            <p>簡單且快速的安排行程吧 !</p>
         </div>
-        <!-- <div class="director">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-        </div> -->
     </nav>
 </template>
 
@@ -19,6 +15,10 @@ export default defineComponent({
     name: 'Nav',
     // 其他選項...
 });
+</script>
+
+<script setup lang="ts">
+import { House } from '@element-plus/icons-vue';
 </script>
 
 <style scoped>
