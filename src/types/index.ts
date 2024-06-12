@@ -2,11 +2,6 @@ export interface TravelTime {
   start: string;
   end: string;
 }
-// export interface Airport {
-//   name: string;
-//   coordinates: [number, number];
-// }
-
 export interface FormData {
   googleMapURL: string;
   airportList: {
@@ -46,4 +41,10 @@ export interface UserInfo {
   userData: UserData;
   formData: FormData;
   placesInfo: PlacesInfo;
+}
+
+export interface GoogleMapListNameResponse {
+  scrapped_total_places: number;
+  places_name: string[];
+  processing_time: number;
 }

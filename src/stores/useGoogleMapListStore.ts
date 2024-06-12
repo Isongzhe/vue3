@@ -4,19 +4,19 @@ import { ref } from "vue";
 import { mockGoogleMapList } from "@/api/mockGoogleMapList";
 
 export const useGoogleMapStore = defineStore("googleMap", () => {
-  const places = ref<string[]>([]);
+  const places_name = ref<string[]>([]);
 
-  async function fetchPlaces() {
+  async function fetchPlacesName() {
     console.log(`加載開始`);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // 模擬3秒的延遲
+    await new Promise((resolve) => setTimeout(resolve, 10000)); // 模擬10秒的延遲
     // 3秒後拿到模擬的數據
     const mockData = mockGoogleMapList();
-    places.value = mockData.places_name;
+    places_name.value = mockData.places_name;
     console.log(`加載完畢`);
   }
 
   return {
-    places,
-    fetchPlaces,
+    places_name,
+    fetchPlacesName,
   };
 });

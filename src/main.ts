@@ -18,6 +18,7 @@ const pinia = createPinia();
 app.use(pinia);
 // 安裝Element Plus
 app.use(ElementPlus);
+
 // 安裝路由
 app.use(router);
 

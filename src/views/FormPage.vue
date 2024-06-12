@@ -1,3 +1,4 @@
+//src/views/FormPage.vue
 <template>
     <el-form class="inputForm">
         <div class="card">
@@ -74,7 +75,7 @@ import { reactive, ref, watchEffect, computed } from 'vue';
 
 // 引入 Pinia store
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
-import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 mock Google地圖api store
+// import { useGoogleMapStore } from '@/stores/useGoogleMapListStore'; // 引入 mock Google地圖api store
 import type { TravelTime, FormData, Place, AirportOptionGroup } from '@/types'; // 引入自定義類型
 
 // 引入 Element Plus 組件
@@ -165,7 +166,14 @@ const airportGroups = ref<AirportOptionGroup[]>([
 ]);
 
 const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
-const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
+// const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
+
+import usePlaceName from "@/hooks/usePlaceNameList"
+const { places_name, fetchPlacesName } = usePlaceName();
+
+import usePlaceList from "@/hooks/usePlaceInfo"
+const { places, fetchPlaces } = usePlaceList(); // 確保正確導入和使用
+
 
 // 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
 const dateRange = ref<string>('');
@@ -205,18 +213,19 @@ const isFormValid = computed(() => {
         localFormData.dateList.length;
 });
 
+import { useRouter } from 'vue-router';
+const router = useRouter(); //使用 router
 // 提交表單，有空值時提示使用者，提交表單時更新 Pinia userInfoStore 的數據
-function submitForm(): void {
+const submitForm = async () => {
     if (isFormValid.value) {
         console.log('表單提交成功');
         formStore.updateFormData(localFormData);
-        formStore.updatePlaceList();
-        console.log('更新後的表單數據:', formStore.userInfo);
-        localStorage.setItem('userInfo', JSON.stringify(formStore.userInfo)); //存成本地端資料
+        console.log('更新後的所有表單數據:', formStore.userInfo);
         ElMessage({
             message: '表單提交成功',
             type: 'success',
         });
+        router.push('/place'); //導向到 form 頁面
     }
     else {
         ElMessage({
@@ -225,7 +234,6 @@ function submitForm(): void {
         })
     }
 }
-
 /* GoogleMap發請求拿資料函式區域 */
 // 判斷Google地圖清單連結是否正確，若正確則先發出請求去拿 places_name[]，先用模擬數據
 const validateAndFetchPlaces = async () => {
@@ -236,15 +244,21 @@ const validateAndFetchPlaces = async () => {
     if (urlPattern.test(localFormData.googleMapURL)) {
         // 顯示發出請求的連結
         console.log('發出請求: ' + localFormData.googleMapURL);
-        // 使用 Pinia store 來獲取模擬數據，拿到 googleMapStore.places
         try {
-            await googleMapStore.fetchPlaces();
+            await fetchPlacesName();
             // 顯示模擬數據
-            console.log('模擬 API 返回的數據:', googleMapStore.places);
+            console.log('模擬API返回的數據(place_name):', places_name.value);
             // 將模擬數據賦值給相應的變量
-            formStore.updatePlaceNameList(googleMapStore.places);
+            formStore.updatePlaceNameList(places_name.value);
+            console.log('更新後的Pinia數據(places_name):', formStore.userInfo.placesInfo.places_name);
+
+            await fetchPlaces();
+            console.log('模擬API返回的數據(places):', places.value);
+            formStore.updatePlaceList(places.value);
+            console.log('更新後的Pinia數據(places):', formStore.userInfo.placesInfo.places);
+
             ElMessage({
-                message: 'Google地圖清單已成功讀取',
+                message: 'Google地圖清單資訊已成功讀取',
                 type: 'success',
             })
         }

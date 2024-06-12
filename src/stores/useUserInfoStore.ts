@@ -2,7 +2,7 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 import type { FormData, UserData, UserInfo, Place } from "@/types";
-import { mockPlaceInfoList } from "@/api/mockPlaceInfoList";
+import { ElMessage } from "element-plus";
 
 export const useUserInfoStore = defineStore("userInfo", () => {
   const defaultAirport: Place = {
@@ -37,16 +37,34 @@ export const useUserInfoStore = defineStore("userInfo", () => {
 
   const updateUserData = (data: Partial<UserData>) => {
     Object.assign(userInfo.userData, data);
+    localStorage.setItem("userData", JSON.stringify(userInfo.userData)); //存成本地端資料
+    ElMessage({
+      message: "userData存成本地端資料成功",
+      type: "success",
+    });
   };
 
   const updateFormData = (data: Partial<FormData>) => {
     Object.assign(userInfo.formData, data);
+    localStorage.setItem("formData", JSON.stringify(userInfo.formData)); //存成本地端資料
+    ElMessage({
+      message: "formData存成本地端資料成功",
+      type: "success",
+    });
   };
   const updatePlaceNameList = (data: string[]) => {
     userInfo.placesInfo.places_name = data;
   };
-  const updatePlaceList = () => {
-    userInfo.placesInfo.places = mockPlaceInfoList();
+  // const updatePlaceList = (data: Place[]) => {
+  //   userInfo.placesInfo.places = data;
+  // };
+  const updatePlaceList = (data: Place[]) => {
+    userInfo.placesInfo.places = data;
+    localStorage.setItem("placesInfo", JSON.stringify(userInfo.placesInfo)); //存成本地端資料
+    ElMessage({
+      message: "placesInfo存成本地端資料成功",
+      type: "success",
+    });
   };
 
   return {

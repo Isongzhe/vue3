@@ -101,23 +101,6 @@ export function mockPlaceInfoList() {
       ],
     },
     {
-      place_id: "ChIJG1MFrpqRQTURMBspyL9IKnY",
-      name: "Sofmap Tenjin 1",
-      geometry: {
-        lat: 33.586811,
-        lng: 130.4010599,
-      },
-      formattedAddress:
-        "日本〒810-0021 Fukuoka, Chuo Ward, Imaizumi, 1 Chome−25−1 Bブロック内1･2F ビックカメラ天神 1号館",
-      types: [
-        "movie_rental",
-        "electronics_store",
-        "point_of_interest",
-        "store",
-        "establishment",
-      ],
-    },
-    {
       place_id: "ChIJDZcTCXeLGGARU7MVy39Gw8w",
       name: "Google日本六本木辦公室",
       geometry: {
@@ -150,35 +133,6 @@ export function mockPlaceInfoList() {
       types: [
         "tourist_attraction",
         "shopping_mall",
-        "point_of_interest",
-        "establishment",
-      ],
-    },
-    {
-      place_id: "ChIJIxL0uJQLYDQRoI5KoYO20z8",
-      name: "名代宇奈とと 石垣店 Unatoto Ishigaki",
-      geometry: {
-        lat: 24.3398699,
-        lng: 124.1885784,
-      },
-      formattedAddress:
-        "日本〒907-0002 Okinawa, Ishigaki, Maezato, 387-3 ＦＯＯＤＢＡＳＥ2階",
-      types: ["restaurant", "food", "point_of_interest", "establishment"],
-    },
-    {
-      place_id: "ChIJVVWgTR2MGGAR67BiGTvaImI",
-      name: "駿河屋 秋葉原車站前店",
-      geometry: {
-        lat: 35.697749,
-        lng: 139.772147,
-      },
-      formattedAddress:
-        "日本〒101-0021 Tokyo, Chiyoda City, Sotokanda, 1 Chome−15−15 山本無線ビル",
-      types: [
-        "movie_rental",
-        "book_store",
-        "store",
-        "food",
         "point_of_interest",
         "establishment",
       ],
