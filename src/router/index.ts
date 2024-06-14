@@ -2,7 +2,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "@/views/HomePage.vue";
 import FormPage from "@/views/FormPage.vue";
-import PlacePage from "@/views/PlacePage.vue";
+import MapPage from "@/views/MapPage.vue";
+import PlacePage from "@/views/PlaceView.vue";
+import PlanPage from "@/views/PlanView.vue";
 
 const routes = [
   {
@@ -16,9 +18,21 @@ const routes = [
     component: FormPage,
   },
   {
-    path: "/place",
-    name: "Place",
-    component: PlacePage,
+    path: "/map",
+    name: "Map",
+    component: MapPage,
+    children: [
+      {
+        path: "place",
+        name: "Place",
+        component: PlacePage,
+      },
+      {
+        path: "plan",
+        name: "Plan",
+        component: PlanPage,
+      },
+    ],
   },
   {
     path: "/:pathMatch(.*)*", // 404頁面

@@ -3,20 +3,22 @@
     <el-form class="inputForm">
         <div class="card">
             <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
-            <el-form-item>
-                <h3>
-                    <el-icon>
-                        <MapLocation />
-                    </el-icon>Google地圖清單連結:
-                </h3>
-                <a href="https://www.google.com.tw/maps" target="_blank">
-                    <el-button size="small" type="primary" :link="true">
-                        打開 Google 地圖
-                    </el-button>
-                </a>
-                <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
-                <el-text class="mx-1" type="warning">※請移除機場以及新增所有飯店到清單內</el-text>
-            </el-form-item>
+            <div class="card-item">
+                <el-form-item>
+                    <h3>
+                        <el-icon>
+                            <MapLocation />
+                        </el-icon>Google地圖清單連結:
+                    </h3>
+                    <a href="https://www.google.com.tw/maps" target="_blank">
+                        <el-button size="small" type="primary" :link="true">
+                            打開 Google 地圖
+                        </el-button>
+                    </a>
+                    <el-input v-model="localFormData.googleMapURL" placeholder="https://maps.app.goo.gl/..." />
+                    <el-text class="mx-1" type="warning">※請移除機場以及新增所有飯店到清單內</el-text>
+                </el-form-item>
+            </div>
         </div>
         <div class="card">
             <img src="/image/googleMap連結說明.png" alt="googleMap連結說明" />
@@ -225,7 +227,7 @@ const submitForm = async () => {
             message: '表單提交成功',
             type: 'success',
         });
-        router.push('/place'); //導向到 form 頁面
+        router.push('/map'); //導向到 map 頁面
     }
     else {
         ElMessage({
