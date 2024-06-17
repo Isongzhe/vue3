@@ -15,8 +15,8 @@
                     <template #header>
                         <div class="card-header">
                             <span>
-                                <el-icon>
-                                    <location />
+                                <el-icon :component="getIconComponent(place)">
+                                    <component :is="getIconComponent(place)" />
                                 </el-icon>
                                 {{ place.name }}
                             </span>
@@ -31,7 +31,7 @@
             </el-aside>
             <el-main>
                 <div id="map"></div>
-                <!-- <gmp-advanced-marker position="lat,lng" title="string"></gmp-advanced-marker> -->
+                <gmp-advanced-marker position="lat,lng" title="string"></gmp-advanced-marker>
             </el-main>
         </el-container>
     </div>
@@ -41,14 +41,29 @@
 /// <reference types="google.maps" /> 
 //上面是引入google.maps的類型定義，避免編譯器報錯
 import { ElCard, ElIcon } from 'element-plus';
-import { Location, CollectionTag, } from '@element-plus/icons-vue';
+import { CollectionTag, } from '@element-plus/icons-vue';
 import type { Place } from '@/types';
-import { onMounted, watch, watchEffect } from 'vue';
+import { onMounted, watchEffect } from 'vue';
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
 import { ElMessage } from 'element-plus';
 
-const userStoreData = useUserInfoStore();
+import { Location, ForkSpoon, HomeFilled, CoffeeCup, Goods } from '@element-plus/icons-vue';
+function getIconComponent(place: Place) {
+    switch (true) {
+        case place.types?.includes('lodging'):
+            return HomeFilled;
+        case place.types?.includes('cafe'):
+            return CoffeeCup;
+        case place.types?.includes('food'):
+            return ForkSpoon;
+        case place.types?.includes('store'):
+            return Goods;
+        default:
+            return Location;
+    }
+}
 
+const userStoreData = useUserInfoStore();
 let map: google.maps.Map; // 宣告地圖變數
 
 
@@ -136,7 +151,7 @@ onMounted(async (): Promise<void> => {
     margin: 20px auto;
     justify-content: center;
     max-width: 95%;
-    height: 650px;
+    height: 500px;
     border-radius: 12px;
     box-sizing: border-box;
     overflow: hidden;
@@ -165,6 +180,10 @@ onMounted(async (): Promise<void> => {
 .el-container .el-main {
     background: #05203c;
     padding: 15px;
+}
+
+.box-card {
+    margin: 5px auto;
 }
 
 #map {

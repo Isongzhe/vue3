@@ -4,41 +4,91 @@
             <el-option v-for="date in dateOptions" :key="date" :label="date" :value="date" />
         </el-select>
     </div>
-    <h2>{{ selectedDate }}</h2>
     <div class="flex">
-        <el-scrollbar max-height="400px">
+        <el-scrollbar max-height="600px" class="el-scrollbar">
+            <el-text>
+                <el-icon>
+                    <CollectionTag />
+                </el-icon>
+                地點列表
+            </el-text>
+            <el-divider></el-divider>
             <VueDraggable v-model="allPlacesList" :animation="150"
                 :group="{ name: 'places', pull: 'clone', put: false }" :sort="false"
-                class="flex flex-col gap-2 p-4 w-300px bg-gray-500/5 rounded" @clone="onClone">
-                <div v-for="(item, index) in allPlacesList" :key="item.place_id"
-                    class="cursor-move h-50px bg-gray-500/5 rounded p-3">
-                    {{ item.name }}
-                </div>
+                class="flex flex-col gap-2 p-4 w-48 rounded" @clone="onClone">
+                <el-card class="box-card" v-for="place in allPlacesList" :key="place.place_id">
+                    <template #header>
+                        <div class="card-header">
+                            <span>
+                                <el-icon :component="getIconComponent(place)">
+                                    <component :is="getIconComponent(place)" />
+                                </el-icon>
+                                {{ place.name }}
+                            </span>
+                        </div>
+                    </template>
+                    <div class="place-info">
+                        <div>
+                            {{ place.formattedAddress }}
+                        </div>
+                    </div>
+                </el-card>
             </VueDraggable>
         </el-scrollbar>
-        <el-scrollbar max-height="400px">
+        <el-scrollbar max-height="600px" class="el-scrollbar">
+            <el-text>
+                <el-icon>
+                    <CollectionTag />
+                </el-icon>
+                {{ selectedDate }} 行程列表
+            </el-text>
+            <el-divider></el-divider>
             <VueDraggable v-model="selectedList" :animation="150" :group="{ name: 'places', pull: true, put: true }"
-                class="flex flex-col gap-2 p-4 w-300px  m-auto bg-gray-500/5 rounded overflow-auto">
-                <div v-for="(item, index) in selectedList" :key="item.place_id"
-                    class="cursor-move h-50px bg-gray-500/5 rounded p-3">
-                    {{ item.name }}
-                    <el-icon>
-                        <Delete class="cursor-pointer" @click="remove(selectedList, index)">></Delete>
-                    </el-icon>
-                </div>
+                class="flex flex-col gap-2 p-4 w-48 rounded overflow-auto">
+                <el-card class="box-card rounded cursor-move" v-for="(place, index) in selectedList"
+                    :key="place.place_id">
+                    <template #header>
+                        <div class="card-header">
+                            <span>
+                                <el-icon :component="getIconComponent(place)">
+                                    <component :is="getIconComponent(place)" />
+                                </el-icon>
+                                {{ index + 1 }}. {{ place.name }}
+                            </span>
+                            <el-icon>
+                                <Delete class="cursor-pointer" @click="remove(selectedList, index)">></Delete>
+                            </el-icon>
+                        </div>
+                    </template>
+                    <div class="place-info">
+                        <el-time-select v-model="place.arrivalTime" placeholder="抵達時間" :start="timePickerOptions.start"
+                            :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                        <!-- <div>
+                            {{ item.formattedAddress }}
+                        </div> -->
+                    </div>
+                </el-card>
             </VueDraggable>
         </el-scrollbar>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, toRefs } from 'vue'
+import { reactive, ref, computed, watch } from 'vue'
+import { ElCard, ElIcon } from 'element-plus';
+import { CollectionTag, } from '@element-plus/icons-vue';
 import { VueDraggable } from 'vue-draggable-plus'
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElSelect } from 'element-plus';
 import { Delete } from '@element-plus/icons-vue';
 import type { Place } from "@/types";
 
+// 設置時間選擇器的選項
+const timePickerOptions = {
+    start: '07:00',
+    step: '00:15',
+    end: '23:45',
+};
 const userInfoStore = useUserInfoStore();
 const { userInfo } = userInfoStore;
 
@@ -46,12 +96,9 @@ const allPlacesList = computed(() => userInfo.placesInfo.places);
 const dateOptions = computed(() => userInfo.formData.dateList);
 const allDatePlacesList = reactive(userInfoStore.allDatePlacesList);
 const selectedDate = ref<string>()
+const selectedList = ref<Place[]>([]);
 
-
-const selectedList = computed<Place[]>(() => {
-    return allDatePlacesList.find(item => item.date === selectedDate.value)?.places || [];
-});
-
+// 監視 selectedList 的變化，並將變化同步到 allDatePlacesList，以便於後續的操作
 watch(selectedList, (newList) => {
     const datePlaces = allDatePlacesList.find(item => item.date === selectedDate.value);
     if (datePlaces) {
@@ -70,18 +117,46 @@ function remove(list: Place[], index: number) {
 }
 
 watch(selectedDate, (newDate) => {
+    const datePlaces = allDatePlacesList.find(item => item.date === newDate);
+    selectedList.value = datePlaces ? datePlaces.places : [];
     console.log(`Selected date changed to ${newDate}`);
 });
+
+import { Location, ForkSpoon, HomeFilled, CoffeeCup, Goods } from '@element-plus/icons-vue';
+function getIconComponent(place: Place) {
+    switch (true) {
+        case place.types?.includes('lodging'):
+            return HomeFilled;
+        case place.types?.includes('cafe'):
+            return CoffeeCup;
+        case place.types?.includes('food'):
+            return ForkSpoon;
+        case place.types?.includes('store'):
+            return Goods;
+        default:
+            return Location;
+    }
+}
 </script>
 
 <style scoped>
 * {
-    border: 2px solid black;
-    color: black;
+    font-size: 16px
 }
 
 .flex {
     display: flex;
+}
+
+/* flex下層 */
+.flex>.el-scrollbar {
+    width: 45%;
+    border: 2px solid #05203c;
+    color: black;
+    border-radius: 12px;
+    overflow: hidden;
+    /* box-sizing: content-box; */
+    margin: 16px auto;
 }
 
 .flex-col {
@@ -96,12 +171,8 @@ watch(selectedDate, (newDate) => {
     padding: 1rem;
 }
 
-.w-300px {
-    width: 300px;
-}
-
-.bg-gray-500\/5 {
-    background-color: rgba(75, 85, 99, 0.05);
+.w-48 {
+    width: 90%;
 }
 
 .rounded {
@@ -120,10 +191,6 @@ watch(selectedDate, (newDate) => {
     height: 50px;
 }
 
-.m-auto {
-    margin: auto;
-}
-
 .justify-between {
     justify-content: space-between;
 }
@@ -132,5 +199,50 @@ watch(selectedDate, (newDate) => {
     cursor: pointer;
     width: 20px;
     height: 20px;
+}
+
+.box-card {
+    width: 100%;
+}
+
+.el-text {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    text-align: center;
+    margin: 10px auto;
+}
+
+.el-divider--horizontal {
+    margin: 0 auto;
+}
+
+.card-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    /* 確保標題寬度佔滿卡片 */
+    box-sizing: border-box;
+    /* 包含內邊距和邊框在內的寬度計算 */
+}
+
+.box-card,
+.card-header {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.card-title {
+    flex-grow: 1;
+    /* 這行確保標題部分佔據剩餘空間 */
+}
+
+.delete-icon {
+    margin-left: auto;
+    /* 這行確保刪除圖標在右側 */
 }
 </style>
