@@ -1,6 +1,6 @@
 // src/stores/useUserInfoStore.ts
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import type { FormData, UserData, UserInfo, Place } from "@/types";
 import { ElMessage } from "element-plus";
 
@@ -34,6 +34,22 @@ export const useUserInfoStore = defineStore("userInfo", () => {
       places: [],
     },
   });
+
+  const allDatePlacesList = computed(() => {
+    return userInfo.formData.dateList.map((date) => ({
+      date,
+      places: [] as Place[],
+    }));
+  });
+
+  const updateDatePlaces = (date: string, places: Place[]) => {
+    const datePlace = allDatePlacesList.value.find(
+      (item) => item.date === date
+    );
+    if (datePlace) {
+      datePlace.places = places;
+    }
+  };
 
   const updateUserData = (data: Partial<UserData>) => {
     Object.assign(userInfo.userData, data);
@@ -69,6 +85,8 @@ export const useUserInfoStore = defineStore("userInfo", () => {
 
   return {
     userInfo,
+    allDatePlacesList,
+    updateDatePlaces,
     updateUserData,
     updateFormData,
     updatePlaceNameList,

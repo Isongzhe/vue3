@@ -48,6 +48,7 @@ const router = createRouter({
 // 添加全局導航守衛
 router.beforeEach((to, from, next) => {
   const isReload = sessionStorage.getItem("isReload") === "true";
+  // const allowedRoutes = ["Home"];
   const allowedRoutes = ["Home", "Place", "Plan"];
   if (
     isReload &&
