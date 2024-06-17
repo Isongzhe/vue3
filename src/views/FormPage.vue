@@ -227,7 +227,7 @@ const submitForm = async () => {
             message: '表單提交成功',
             type: 'success',
         });
-        router.push('/map'); //導向到 map 頁面
+        router.push('/map/place'); //導向到 map 頁面
     }
     else {
         ElMessage({

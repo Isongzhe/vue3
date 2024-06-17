@@ -10,7 +10,7 @@ export default function () {
   async function fetchPlacesName(): Promise<void> {
     try {
       console.log(`加載開始`);
-      await new Promise((resolve) => setTimeout(resolve, 10000)); // 模擬10秒的延遲
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 模擬5秒的延遲
       const mockData: GoogleMapListNameResponse = mockGoogleMapList();
       places_name.value = mockData.places_name;
       console.log(`加載完畢`);

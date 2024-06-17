@@ -48,8 +48,12 @@ const router = createRouter({
 // 添加全局導航守衛
 router.beforeEach((to, from, next) => {
   const isReload = sessionStorage.getItem("isReload") === "true";
-
-  if (isReload && to.name !== "Home" && to.name !== "Place") {
+  const allowedRoutes = ["Home", "Place", "Plan"];
+  if (
+    isReload &&
+    typeof to.name === "string" &&
+    !allowedRoutes.includes(to.name)
+  ) {
     sessionStorage.setItem("isReload", "false"); // 重置標記
     next({ name: "Home" });
   } else {
