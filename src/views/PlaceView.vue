@@ -10,7 +10,8 @@
                     地點列表
                 </el-text>
                 <el-divider></el-divider>
-                <el-card class="box-card" v-for="place in filteredPlaces" :key="place.place_id">
+                <el-card class="box-card" v-for="place in userStoreData.userInfo.placesInfo.places"
+                    :key="place.place_id">
                     <template #header>
                         <div class="card-header">
                             <span>
@@ -42,27 +43,20 @@
 import { ElCard, ElIcon } from 'element-plus';
 import { Location, CollectionTag, } from '@element-plus/icons-vue';
 import type { Place } from '@/types';
-import { onMounted } from 'vue';
+import { onMounted, watch, watchEffect } from 'vue';
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
-
+import { ElMessage } from 'element-plus';
 
 const userStoreData = useUserInfoStore();
-// const places: Place[] = userStoreData.userInfo.placesInfo.places
-
-const placesInfo = JSON.parse(localStorage.getItem('placesInfo') || '[]')
-console.log('未過濾places: ', placesInfo.places);
-const filteredPlaces = placesInfo.places.filter((place: Place) => !place.types?.includes('airport'));
-console.log('已過濾places: ', filteredPlaces);
 
 let map: google.maps.Map; // 宣告地圖變數
 
-// 初始化地圖，可透過參數傳入當天的地點資訊，包含日期與地點(也就是locationInfo.locations[某天])
-async function initMap(par: Place[]): Promise<void> {
 
+// 初始化地圖，可透過參數傳入當天的地點資訊，包含日期與地點(也就是locationInfo.locations[某天])
+async function initMap(): Promise<void> {
     // 引入地圖與標記庫，參考google.maps的官方文件
     const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-
+    await google.maps.importLibrary("marker");
 
     // 初始化地圖，包含多個參數
     map = new Map(document.getElementById("map") as HTMLElement, {
@@ -77,34 +71,47 @@ async function initMap(par: Place[]): Promise<void> {
     // 將交通圖層加入地圖
     transitLayer.setMap(map);
     const bounds = new google.maps.LatLngBounds(); // 宣告一個地理座標的邊界
+}
 
-    // 遍歷 places 陣列，並將每個地點都標記添加到地圖中
+// 繪製標記函數
+function drawMarkers(par: Place[]): void {
+    // 取得邊界
+    const bounds = new google.maps.LatLngBounds();
+    // 遍歷地點資訊，並繪製標記
     par.forEach(place => {
-        // console.log(place);
-        const marker = new AdvancedMarkerElement({
+        const marker = new google.maps.marker.AdvancedMarkerElement({
             position: { lat: place.geometry.lat, lng: place.geometry.lng },
-            map: map, // 標記加入地圖
-            title: place.name, // 標記物件的標題(地點名稱)
-            collisionBehavior: google.maps.CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY, // 碰撞行為
-            gmpDraggable: false, // 不可拖曳
+            map: map,
+            title: place.name,
+            gmpDraggable: false,
         });
-        bounds.extend(marker.position as google.maps.LatLng); // 將標記的位置加入地圖邊界
+        // 將標記加入邊界
+        bounds.extend(marker.position as google.maps.LatLng);
     });
-    // 調整地圖視圖以適應所有標記
+    // 調整地圖視窗大小
     map.fitBounds(bounds);
 }
 
 // 組件掛載時，執行
 onMounted(async (): Promise<void> => {
     // 初始化地圖，await表示以下程式碼會等待initMap執行完畢
-    await initMap(filteredPlaces);
+    await initMap();
     // 確保地圖初始化完成
     console.log('Map is ready');
-    // 確認地圖中心點，有google.maps.Map或是undefined兩種可能，所以要加上判斷
-    const center = map.getCenter();
-    if (center) {
-        console.log(`Latitude: ${center.lat()}, Longitude: ${center.lng()}`);
-    }
+
+    // 監視 userStoreData.userInfo.placesInfo.places 的變化
+    watchEffect(() => {
+        // 取得使用者地點資訊
+        const places = userStoreData.userInfo.placesInfo.places;
+        if (places.length > 0) { // 如果地點資訊不為空
+            drawMarkers(places); // 繪製標記
+        } else {
+            ElMessage({
+                message: '請等待資料載入中',
+                type: 'warning',
+            });
+        }
+    });
 });
 </script>
 

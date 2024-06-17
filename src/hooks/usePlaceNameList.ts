@@ -5,19 +5,25 @@ import type { GoogleMapListNameResponse } from "@/types";
 // import axios from "axios";
 
 export default function () {
+  // 定義places_name變數
   const places_name = ref<string[]>([]);
 
-  async function fetchPlacesName(): Promise<void> {
+  // 假造API端口
+  const fetchPlacesName = async () => {
     try {
-      console.log(`加載開始`);
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // 模擬5秒的延遲
-      const mockData: GoogleMapListNameResponse = mockGoogleMapList();
-      places_name.value = mockData.places_name;
-      console.log(`加載完畢`);
+      const res = await new Promise<string[]>((resolve) => {
+        setTimeout(() => {
+          resolve(mockGoogleMapList().places_name);
+        }, 3000);
+      });
+      places_name.value = res;
+      console.log(places_name);
     } catch (error) {
-      console.log(error);
+      console.error("error", error);
     }
-  }
+  };
+
+  // 返回places_name變數和fetchPlacesName方法
   return {
     places_name,
     fetchPlacesName,

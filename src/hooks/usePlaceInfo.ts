@@ -14,7 +14,7 @@ export default function () {
       const res = await new Promise<Place[]>((resolve) => {
         setTimeout(() => {
           resolve(mockPlaceInfoList());
-        }, 3000);
+        }, 2000);
       });
       places.value = res;
       console.log(places);
