@@ -14,11 +14,15 @@
                     :key="place.place_id">
                     <template #header>
                         <div class="card-header">
+                            <el-icon :component="getIconComponent(place)">
+                                <component :is="getIconComponent(place)" />
+                            </el-icon>
                             <span>
-                                <el-icon :component="getIconComponent(place)">
-                                    <component :is="getIconComponent(place)" />
-                                </el-icon>
-                                {{ place.name }}
+                                <el-link :underline="false"
+                                    :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
+                                    target="_blank">
+                                    {{ place.name }}
+                                </el-link>
                             </span>
                         </div>
                     </template>
@@ -40,7 +44,7 @@
 <script setup lang="ts">
 /// <reference types="google.maps" /> 
 //上面是引入google.maps的類型定義，避免編譯器報錯
-import { ElCard, ElIcon } from 'element-plus';
+import { ElCard, ElIcon, ElLink } from 'element-plus';
 import { CollectionTag, } from '@element-plus/icons-vue';
 import type { Place } from '@/types';
 import { onMounted, watchEffect } from 'vue';
@@ -184,6 +188,10 @@ onMounted(async (): Promise<void> => {
 
 .box-card {
     margin: 5px auto;
+}
+
+.el-icon {
+    margin-right: 5px;
 }
 
 #map {

@@ -64,11 +64,11 @@ watch(
     overflow: hidden;
 }
 
-.el-icon {
-    margin-right: 10px;
-}
-
 .custom-tabs-label {
     font-size: 16px;
+}
+
+.el-icon {
+    margin-right: 5px;
 }
 </style>

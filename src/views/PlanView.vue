@@ -23,7 +23,11 @@
                                 <el-icon :component="getIconComponent(place)">
                                     <component :is="getIconComponent(place)" />
                                 </el-icon>
-                                {{ place.name }}
+                                <el-link :underline="false"
+                                    :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
+                                    target="_blank">
+                                    {{ place.name }}
+                                </el-link>
                             </span>
                         </div>
                     </template>
@@ -75,7 +79,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, computed, watch } from 'vue'
-import { ElCard, ElIcon } from 'element-plus';
+import { ElCard, ElIcon, ElLink } from 'element-plus';
 import { CollectionTag, } from '@element-plus/icons-vue';
 import { VueDraggable } from 'vue-draggable-plus'
 import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者資訊 store
@@ -264,5 +268,9 @@ function getIconComponent(place: Place) {
 .delete-icon {
     margin-left: auto;
     /* 這行確保刪除圖標在右側 */
+}
+
+.el-icon {
+    margin-right: 5px;
 }
 </style>
