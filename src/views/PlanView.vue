@@ -4,6 +4,7 @@
             <el-option v-for="date in dateOptions" :key="date" :label="date" :value="date" />
         </el-select>
     </div>
+    <div id="map"></div>
     <div class="flex">
         <el-scrollbar max-height="600px" class="el-scrollbar">
             <el-text>
@@ -23,18 +24,15 @@
                                 <el-icon :component="getIconComponent(place)">
                                     <component :is="getIconComponent(place)" />
                                 </el-icon>
-                                <el-link :underline="false"
-                                    :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
-                                    target="_blank">
-                                    {{ place.name }}
-                                </el-link>
+                                {{ place.name }}
                             </span>
                         </div>
                     </template>
                     <div class="place-info">
-                        <div>
+                        <el-link :underline="false"
+                            :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`" target="_blank">
                             {{ place.formattedAddress }}
-                        </div>
+                        </el-link>
                     </div>
                 </el-card>
             </VueDraggable>
@@ -59,17 +57,26 @@
                                 </el-icon>
                                 {{ index + 1 }}. {{ place.name }}
                             </span>
-                            <el-icon>
-                                <Delete class="cursor-pointer" @click="remove(selectedList, index)">></Delete>
-                            </el-icon>
+                            <el-link :underline="false">
+                                <el-icon>
+                                    <Delete class="cursor-pointer" @click="remove(selectedList, index)">></Delete>
+                                </el-icon>
+                            </el-link>
                         </div>
                     </template>
                     <div class="place-info">
-                        <el-time-select v-model="place.arrivalTime" placeholder="抵達時間" :start="timePickerOptions.start"
-                            :step="timePickerOptions.step" :end="timePickerOptions.end" />
+                        <!-- <el-time-select v-model="place.arrivalTime" placeholder="抵達時間" :start="timePickerOptions.start"
+                            :step="timePickerOptions.step" :end="timePickerOptions.end" /> -->
                         <!-- <div>
-                            {{ item.formattedAddress }}
+                            {{ place.formattedAddress }}
                         </div> -->
+                        <div>
+                            <el-link :underline="false"
+                                :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
+                                target="_blank">
+                                {{ place.formattedAddress }}
+                            </el-link>
+                        </div>
                     </div>
                 </el-card>
             </VueDraggable>
@@ -78,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch } from 'vue'
+import { reactive, ref, computed, watch, onMounted } from 'vue'
 import { ElCard, ElIcon, ElLink } from 'element-plus';
 import { CollectionTag, } from '@element-plus/icons-vue';
 import { VueDraggable } from 'vue-draggable-plus'
@@ -95,12 +102,28 @@ const timePickerOptions = {
     end: '23:45',
 };
 const userInfoStore = useUserInfoStore();
-const { userInfo, allDatePlacesList } = storeToRefs(userInfoStore);
+const { allDatePlacesList } = storeToRefs(userInfoStore);
 
-const allPlacesList = userInfo.value.placesInfo.places;
-const dateOptions = userInfo.value.formData.dateList;
+// const airports = computed(() => [
+//     userInfoStore.userInfo.formData.airportList.arrivalAirport,
+//     userInfoStore.userInfo.formData.airportList.returnAirport,
+// ]);
 
-const selectedDate = ref<string>()
+const allPlacesList = ref<Place[]>([]);
+
+onMounted(() => {
+    console.log('mounted');
+    // console.log("未加入機場", userInfoStore.userInfo.placesInfo.places);
+    // console.log("機場", airports.value);
+    allPlacesList.value = userInfoStore.userInfo.placesInfo.places;
+
+    // // 每次載入時重新將機場數據添加到地點列表的最前面
+    // allPlacesList.value = [...airports.value, ...userInfoStore.userInfo.placesInfo.places];
+    // console.log("加入機場後", allPlacesList.value);
+});
+
+const dateOptions = userInfoStore.userInfo.formData.dateList;
+const selectedDate = ref<string>(dateOptions[0])
 const selectedList = ref<Place[]>([]);
 
 // 監視 selectedList 的變化，並將變化同步到 allDatePlacesList，以便於後續的操作
@@ -113,6 +136,7 @@ watch(selectedList, (newList) => {
 
 function onClone() {
     console.log('clone');
+    console.log('selectedList', selectedList.value);
 }
 
 function remove(list: Place[], index: number) {
@@ -184,7 +208,8 @@ function getIconComponent(place: Place) {
 }
 
 .w-48 {
-    width: 90%;
+    width: 95%;
+    margin: 0 auto;
 }
 
 .rounded {
@@ -272,5 +297,11 @@ function getIconComponent(place: Place) {
 
 .el-icon {
     margin-right: 5px;
+}
+
+.el-scrollbar__view {
+    justify-content: center;
+    margin: 0 auto;
+    align-content: center;
 }
 </style>

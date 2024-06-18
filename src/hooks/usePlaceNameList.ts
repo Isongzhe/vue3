@@ -16,7 +16,7 @@ export default function () {
         }, 3000);
       });
       places_name.value = response;
-      console.log(places_name);
+      // console.log(places_name);
     } catch (error) {
       console.error("error", error);
     }

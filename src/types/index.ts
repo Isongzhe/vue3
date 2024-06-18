@@ -22,6 +22,7 @@ export interface Place {
   geometry: Geometry;
   formattedAddress: string;
   types?: string[];
+  departureTime?: string;
   arrivalTime?: string;
 }
 export interface AirportOptionGroup {

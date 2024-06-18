@@ -112,6 +112,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 140.3843215
                 },
                 "formattedAddress": "1-1 Furugome, Narita, Chiba 282-0004日本",
+                "types": ["airport"]
             },
             {
                 "place_id": "ChIJ45IxpAtkGGAR3_hG0anDMg0",
@@ -121,6 +122,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 139.7798386
                 },
                 "formattedAddress": "Hanedakuko, Ota City, Tokyo 144-0041日本",
+                "types": ["airport"]
             },
         ],
     },
@@ -135,6 +137,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 135.2366945
                 },
                 "formattedAddress": "1 Senshukukokita, Izumisano, Osaka 549-0001日本",
+                "types": ["airport"]
             },
             {
                 "place_id": "ChIJzynM7ZN9BGARJQAsbih9mEI",
@@ -144,6 +147,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 136.8115355
                 },
                 "formattedAddress": "1 Chome-1 Centrair, Tokoname, Aichi 479-0881日本",
+                "types": ["airport"]
             },
             {
                 "place_id": "ChIJ3RpcnUUgdV8R9oH25Xxguho",
@@ -153,6 +157,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 141.6866374
                 },
                 "formattedAddress": "Bibi, Chitose, Hokkaido 066-0012日本",
+                "types": ["airport"]
             },
             {
                 "place_id": "ChIJrQFpQhaQQTURtx9OWEZ_5hY",
@@ -162,6 +167,7 @@ const airportGroups = ref<AirportOptionGroup[]>([
                     "lng": 130.4438542
                 },
                 "formattedAddress": "778-1 Shimousui, Hakata Ward, Fukuoka, 812-0003日本",
+                "types": ["airport"]
             }
         ],
     },
@@ -175,7 +181,7 @@ const { places_name, fetchPlacesName, fetchPlacesNameAPI } = usePlaceName();
 
 import usePlaceList from "@/hooks/usePlaceInfo"
 const { places, fetchPlaces, fetchPlacesAPI } = usePlaceList(); // 確保正確導入和使用
-
+import { cloneDeep } from 'lodash';
 
 // 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
 const dateRange = ref<string>('');
@@ -188,17 +194,19 @@ const defaultAirport: Place = {
         lng: 0
     },
     formattedAddress: '',
+    types: ["airport"]
 };
 
-const selectedArrivalAirport = ref<Place>({ ...defaultAirport });
-const selectedReturnAirport = ref<Place>({ ...defaultAirport });
+let selectedArrivalAirport = ref<Place>(cloneDeep(defaultAirport));
+let selectedReturnAirport = ref<Place>(cloneDeep(defaultAirport));
 
+// 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
 // 初始化本地表單響應式數據
 const localFormData = reactive<FormData>({
     googleMapURL: '',
     airportList: {
-        arrivalAirport: { ...defaultAirport },
-        returnAirport: { ...defaultAirport },
+        arrivalAirport: cloneDeep(defaultAirport),
+        returnAirport: cloneDeep(defaultAirport),
     },
     dateTimeRange: { start: '', end: '' },
     dateList: [],
@@ -221,6 +229,11 @@ const router = useRouter(); //使用 router
 const submitForm = async () => {
     if (isFormValid.value) {
         console.log('表單提交成功');
+
+        // 手動更新 arrivalAirport 和 returnAirport 的時間屬性
+        localFormData.airportList.arrivalAirport.departureTime = localFormData.dateTimeRange.start;
+        localFormData.airportList.returnAirport.arrivalTime = localFormData.dateTimeRange.end;
+
         formStore.updateFormData(localFormData);
         console.log('更新後的所有表單數據:', formStore.userInfo);
         ElMessage({
@@ -247,30 +260,24 @@ const validateAndFetchPlaces = async () => {
         // 顯示發出請求的連結
         console.log('發出請求: ' + localFormData.googleMapURL);
         try {
-            await fetchPlacesName(); //假造的API接口:內部更新places_name[]
-
+            // await fetchPlacesName(); //假造的API接口:內部更新places_name[]
             //真實的API接口:給定Google地圖清單連結，內部更新places_name[]
-            // await fetchPlacesNameAPI(localFormData.googleMapURL); 
+            await fetchPlacesNameAPI(localFormData.googleMapURL);
 
             // 顯示模擬數據
-            console.log('模擬API返回的數據(place_name):', places_name.value);
+            // console.log('模擬API返回的數據(place_name):', places_name.value);
+
             // 將模擬數據賦值給相應的變量
             formStore.updatePlaceNameList(places_name.value);
-            console.log('更新後的Pinia數據(places_name):', formStore.userInfo.placesInfo.places_name);
+            // console.log('更新後的Pinia數據(places_name):', formStore.userInfo.placesInfo.places_name);
 
             await fetchPlaces(); //假造的API接口:內部更新places[]
 
-            //真實的API接口:給定places_name[]，內部更新places[]
-            // await fetchPlacesAPI(formStore.userInfo.placesInfo.places_name); 
+            // 真實的API接口:給定places_name[]，內部更新places[]
+            // await fetchPlacesAPI(formStore.userInfo.placesInfo.places_name);
 
-            console.log('模擬API返回的數據(places):', places.value);
+            // console.log('模擬API返回的數據(places):', places.value);
             formStore.updatePlaceList(places.value);
-            console.log('更新後的Pinia數據(places):', formStore.userInfo.placesInfo.places);
-
-            ElMessage({
-                message: 'Google地圖清單資訊已成功讀取並寫入',
-                type: 'success',
-            })
         }
         catch {
             ElMessage({
@@ -332,11 +339,11 @@ function handleAirportChange(value: string, isArrival: boolean): void {
         console.log(`選擇的${isArrival ? '抵達' : '回程'}機場:`, selectedAirport);
 
         if (isArrival) {
-            selectedArrivalAirport.value = selectedAirport;
-            localFormData.airportList.arrivalAirport = selectedAirport;
+            selectedArrivalAirport.value = cloneDeep(selectedAirport); // 使用深拷貝
+            localFormData.airportList.arrivalAirport = cloneDeep(selectedArrivalAirport.value); // 使用深拷貝
         } else {
-            selectedReturnAirport.value = selectedAirport;
-            localFormData.airportList.returnAirport = selectedAirport;
+            selectedReturnAirport.value = cloneDeep(selectedAirport); // 使用深拷貝
+            localFormData.airportList.returnAirport = cloneDeep(selectedReturnAirport.value); // 使用深拷貝
         }
     }
 }

@@ -35,7 +35,6 @@
             </el-aside>
             <el-main>
                 <div id="map"></div>
-                <gmp-advanced-marker position="lat,lng" title="string"></gmp-advanced-marker>
             </el-main>
         </el-container>
     </div>
