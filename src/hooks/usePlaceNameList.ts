@@ -1,8 +1,7 @@
 // hooks/usePlaceNameList.ts
 import { ref } from "vue";
 import { mockGoogleMapList } from "@/api/mockGoogleMapList";
-import type { GoogleMapListNameResponse } from "@/types";
-// import axios from "axios";
+import axios from "axios";
 
 export default function () {
   // 定義places_name變數
@@ -11,12 +10,30 @@ export default function () {
   // 假造API端口
   const fetchPlacesName = async () => {
     try {
-      const res = await new Promise<string[]>((resolve) => {
+      const response = await new Promise<string[]>((resolve) => {
         setTimeout(() => {
           resolve(mockGoogleMapList().places_name);
         }, 3000);
       });
-      places_name.value = res;
+      places_name.value = response;
+      console.log(places_name);
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+  // 真實API端口
+  const fetchPlacesNameAPI = async (url: string): Promise<void> => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/crawl_google_map",
+        {
+          params: {
+            url: url,
+          },
+        }
+      );
+      // 假設API返回的數據結構與mockGoogleMapList一致
+      places_name.value = response.data.places_name;
       console.log(places_name);
     } catch (error) {
       console.error("error", error);
@@ -27,5 +44,6 @@ export default function () {
   return {
     places_name,
     fetchPlacesName,
+    fetchPlacesNameAPI,
   };
 }

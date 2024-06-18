@@ -1,7 +1,9 @@
 <template>
     <nav>
         <div class="marker">
-            <h2>Traveler 旅行者</h2>
+            <router-link to="/" class="router-link-block">
+                <h2>Traveler 旅行者</h2>
+            </router-link>
             <p>簡單且快速的安排行程吧 !</p>
         </div>
     </nav>
@@ -18,7 +20,8 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { House } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
+const router = useRouter(); //使用 router
 </script>
 
 <style scoped>
@@ -31,6 +34,15 @@ nav {
     align-items: center; */
     padding-left: 48px;
     font-weight: 700;
+}
+
+/* 針對 <router-link> 元素設置 display: block */
+.router-link-block {
+    display: block;
+    text-decoration: none;
+    /* 移除默認下劃線 */
+    color: inherit;
+    /* 繼承父元素的文字顏色 */
 }
 
 .marker {
@@ -56,13 +68,5 @@ nav {
     text-align: start;
     letter-spacing: normal;
 
-}
-
-.director a {
-    font-size: 24px;
-    text-decoration: none;
-    /* 移除下劃線 */
-    color: inherit;
-    /* 讓文字顏色繼承父元素的顏色 */
 }
 </style>

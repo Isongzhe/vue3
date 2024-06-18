@@ -82,6 +82,7 @@ import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者
 import { ElMessage, ElSelect } from 'element-plus';
 import { Delete } from '@element-plus/icons-vue';
 import type { Place } from "@/types";
+import { storeToRefs } from "pinia"
 
 // 設置時間選擇器的選項
 const timePickerOptions = {
@@ -90,36 +91,43 @@ const timePickerOptions = {
     end: '23:45',
 };
 const userInfoStore = useUserInfoStore();
-const { userInfo } = userInfoStore;
+const { userInfo, allDatePlacesList } = storeToRefs(userInfoStore);
 
-const allPlacesList = computed(() => userInfo.placesInfo.places);
-const dateOptions = computed(() => userInfo.formData.dateList);
-const allDatePlacesList = reactive(userInfoStore.allDatePlacesList);
+const allPlacesList = userInfo.value.placesInfo.places;
+const dateOptions = userInfo.value.formData.dateList;
+
 const selectedDate = ref<string>()
 const selectedList = ref<Place[]>([]);
 
 // 監視 selectedList 的變化，並將變化同步到 allDatePlacesList，以便於後續的操作
 watch(selectedList, (newList) => {
-    const datePlaces = allDatePlacesList.find(item => item.date === selectedDate.value);
+    const datePlaces = allDatePlacesList.value.find(item => item.date === selectedDate.value);
     if (datePlaces) {
         datePlaces.places = newList;
     }
 }, { deep: true });
 
 function onClone() {
-    console.log('clone')
-    console.log(`${selectedDate.value} selectedList`, selectedList.value)
-    console.log(`${selectedDate.value} allDatePlacesList`, allDatePlacesList)
+    console.log('clone');
 }
 
 function remove(list: Place[], index: number) {
+    console.log(`Remove ${list[index].name}`);
+    ElMessage({
+        message: `移除${list[index].name}`,
+        type: 'success',
+    });
     list.splice(index, 1)
 }
 
 watch(selectedDate, (newDate) => {
-    const datePlaces = allDatePlacesList.find(item => item.date === newDate);
+    const datePlaces = allDatePlacesList.value.find(item => item.date === newDate);
     selectedList.value = datePlaces ? datePlaces.places : [];
     console.log(`Selected date changed to ${newDate}`);
+    ElMessage({
+        message: `切換至${newDate} 行程列表`,
+        type: 'success',
+    });
 });
 
 import { Location, ForkSpoon, HomeFilled, CoffeeCup, Goods } from '@element-plus/icons-vue';
@@ -199,6 +207,18 @@ function getIconComponent(place: Place) {
     cursor: pointer;
     width: 20px;
     height: 20px;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.el-select--large {
+    margin-left: 30px;
 }
 
 .box-card {

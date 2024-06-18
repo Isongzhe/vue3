@@ -24,7 +24,7 @@ export default function () {
   };
 
   // 真實API端口
-  const fetchPlacesAPI = async (placesName: string[]) => {
+  const fetchPlacesAPI = async (placesName: string[]): Promise<void> => {
     const rawData: object = {
       places_name: placesName,
     };

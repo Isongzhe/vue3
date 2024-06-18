@@ -171,10 +171,10 @@ const formStore = useUserInfoStore(); // 初始化 useUserInfoStore
 // const googleMapStore = useGoogleMapStore(); // 初始化 useGoogleMapStore
 
 import usePlaceName from "@/hooks/usePlaceNameList"
-const { places_name, fetchPlacesName } = usePlaceName();
+const { places_name, fetchPlacesName, fetchPlacesNameAPI } = usePlaceName();
 
 import usePlaceList from "@/hooks/usePlaceInfo"
-const { places, fetchPlaces } = usePlaceList(); // 確保正確導入和使用
+const { places, fetchPlaces, fetchPlacesAPI } = usePlaceList(); // 確保正確導入和使用
 
 
 // 初始化頁面響應式數據，包括日期區間、時間區間、抵達機場、回程機場(為了表單)
@@ -247,20 +247,28 @@ const validateAndFetchPlaces = async () => {
         // 顯示發出請求的連結
         console.log('發出請求: ' + localFormData.googleMapURL);
         try {
-            await fetchPlacesName();
+            await fetchPlacesName(); //假造的API接口:內部更新places_name[]
+
+            //真實的API接口:給定Google地圖清單連結，內部更新places_name[]
+            // await fetchPlacesNameAPI(localFormData.googleMapURL); 
+
             // 顯示模擬數據
             console.log('模擬API返回的數據(place_name):', places_name.value);
             // 將模擬數據賦值給相應的變量
             formStore.updatePlaceNameList(places_name.value);
             console.log('更新後的Pinia數據(places_name):', formStore.userInfo.placesInfo.places_name);
 
-            await fetchPlaces();
+            await fetchPlaces(); //假造的API接口:內部更新places[]
+
+            //真實的API接口:給定places_name[]，內部更新places[]
+            // await fetchPlacesAPI(formStore.userInfo.placesInfo.places_name); 
+
             console.log('模擬API返回的數據(places):', places.value);
             formStore.updatePlaceList(places.value);
             console.log('更新後的Pinia數據(places):', formStore.userInfo.placesInfo.places);
 
             ElMessage({
-                message: 'Google地圖清單資訊已成功讀取',
+                message: 'Google地圖清單資訊已成功讀取並寫入',
                 type: 'success',
             })
         }
