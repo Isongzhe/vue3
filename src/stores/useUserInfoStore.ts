@@ -18,7 +18,7 @@ export const useUserInfoStore = defineStore("userInfo", () => {
   const userInfo = reactive<UserInfo>({
     userData: {
       name: "SUNG-CHE LIN",
-      projectName: "銀座一日遊",
+      projectName: "日本行(測試)",
     },
     formData: {
       googleMapURL: "",
@@ -64,10 +64,10 @@ export const useUserInfoStore = defineStore("userInfo", () => {
       if (index === userInfo.formData.dateList.length - 1) {
         places.push(airportsList[1]);
       }
-
+      // 將日期地點加回到 initialList
       initialList.push({ date, places });
     });
-
+    // 回傳初始化後的日期地點列表，也就是 allDatePlacesList
     return initialList;
   });
 
@@ -82,20 +82,20 @@ export const useUserInfoStore = defineStore("userInfo", () => {
 
   const updateUserData = (data: Partial<UserData>) => {
     Object.assign(userInfo.userData, data);
-    localStorage.setItem("userData", JSON.stringify(userInfo.userData)); //存成本地端資料
-    ElMessage({
-      message: "用戶資料存成本地端資料成功",
-      type: "success",
-    });
+    // localStorage.setItem("userData", JSON.stringify(userInfo.userData)); //存成本地端資料
+    // ElMessage({
+    //   message: "用戶資料存成本地端資料成功",
+    //   type: "success",
+    // });
   };
 
   const updateFormData = (data: Partial<FormData>) => {
     Object.assign(userInfo.formData, data);
-    localStorage.setItem("formData", JSON.stringify(userInfo.formData)); //存成本地端資料
-    ElMessage({
-      message: "表單資訊存成本地端資料成功",
-      type: "success",
-    });
+    // localStorage.setItem("formData", JSON.stringify(userInfo.formData)); //存成本地端資料
+    // ElMessage({
+    //   message: "表單資訊存成本地端資料成功",
+    //   type: "success",
+    // });
   };
   const updatePlaceNameList = (data: string[]) => {
     userInfo.placesInfo.places_name = data;
@@ -105,11 +105,11 @@ export const useUserInfoStore = defineStore("userInfo", () => {
   // };
   const updatePlaceList = (data: Place[]) => {
     userInfo.placesInfo.places = sortPlaces(data);
-    localStorage.setItem("placesInfo", JSON.stringify(userInfo.placesInfo)); //存成本地端資料
-    ElMessage({
-      message: "地點資訊存成本地端資料成功",
-      type: "success",
-    });
+    // localStorage.setItem("placesInfo", JSON.stringify(userInfo.placesInfo)); //存成本地端資料
+    // ElMessage({
+    //   message: "地點資訊存成本地端資料成功",
+    //   type: "success",
+    // });
   };
   const sortPlaces = (places: Place[]): Place[] => {
     return places.sort((a, b) => {

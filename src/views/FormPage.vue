@@ -271,10 +271,10 @@ const validateAndFetchPlaces = async () => {
             formStore.updatePlaceNameList(places_name.value);
             // console.log('更新後的Pinia數據(places_name):', formStore.userInfo.placesInfo.places_name);
 
-            await fetchPlaces(); //假造的API接口:內部更新places[]
+            // await fetchPlaces(); //假造的API接口:內部更新places[]
 
             // 真實的API接口:給定places_name[]，內部更新places[]
-            // await fetchPlacesAPI(formStore.userInfo.placesInfo.places_name);
+            await fetchPlacesAPI(formStore.userInfo.placesInfo.places_name);
 
             // console.log('模擬API返回的數據(places):', places.value);
             formStore.updatePlaceList(places.value);
@@ -305,8 +305,10 @@ watchEffect(() => {
     const [start, end] = dateRange.value.split(' to ');
     if (start && end && timeRange.start && timeRange.end) {
         localFormData.dateTimeRange = {
-            start: `${start}T${timeRange.start}:00`,
-            end: `${end}T${timeRange.end}:00`,
+            // start: `${start}T${timeRange.start}:00`,
+            // end: `${end}T${timeRange.end}:00`,
+            start: `${timeRange.start}`,
+            end: `${timeRange.end}`,
         };
         console.log('選擇的日期區間:', localFormData.dateTimeRange);
     }

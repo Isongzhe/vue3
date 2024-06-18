@@ -12,7 +12,6 @@
 
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue';
-import { defineProps } from 'vue';
 import type { Place } from '@/types';
 import { ElButton } from 'element-plus';
 import { Loading } from '@element-plus/icons-vue'

@@ -56,7 +56,11 @@
                                 <el-icon :component="getIconComponent(place)">
                                     <component :is="getIconComponent(place)" />
                                 </el-icon>
-                                {{ index + 1 }}. {{ place.name }}
+                                <el-link :underline="false"
+                                    :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
+                                    target="_blank">
+                                    {{ index + 1 }}. {{ place.name }}
+                                </el-link>
                             </span>
                             <el-link :underline="false">
                                 <el-icon>
@@ -66,24 +70,26 @@
                         </div>
                     </template>
                     <div class="place-info">
-                        <!-- <div class="div" v-if="place.arrivalTime">
+                        <div v-if="place.departureTime">
+                            <el-time-select v-model="place.departureTime" placeholder="出發時間"
+                                :start="timePickerOptions.start" :step="timePickerOptions.step"
+                                :end="timePickerOptions.end" />
+                        </div>
+                        <div v-else>
                             <el-time-select v-model="place.arrivalTime" placeholder="抵達時間"
                                 :start="timePickerOptions.start" :step="timePickerOptions.step"
                                 :end="timePickerOptions.end" />
-                        </div> -->
-
-                        <!-- <el-time-select v-model="place.arrivalTime" placeholder="抵達時間" :start="timePickerOptions.start"
-                            :step="timePickerOptions.step" :end="timePickerOptions.end" /> -->
+                        </div>
                         <!-- <div>
                             {{ place.formattedAddress }}
                         </div> -->
-                        <div>
+                        <!-- <div>
                             <el-link :underline="false"
                                 :href="`https://www.google.com/maps/place/?q=place_id:${place.place_id}`"
                                 target="_blank">
                                 {{ place.formattedAddress }}
                             </el-link>
-                        </div>
+                        </div> -->
                     </div>
                 </el-card>
             </VueDraggable>
