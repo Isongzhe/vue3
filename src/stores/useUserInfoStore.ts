@@ -34,11 +34,41 @@ export const useUserInfoStore = defineStore("userInfo", () => {
       places: [],
     },
   });
+  // const allDatePlacesList = computed(() => {
+  //   return userInfo.formData.dateList.map((date) => ({
+  //     date,
+  //     places: [] as Place[],
+  //   }));
+  // });
+  // 初始化時包含機場的日期地點列表
   const allDatePlacesList = computed(() => {
-    return userInfo.formData.dateList.map((date) => ({
-      date,
-      places: [] as Place[],
-    }));
+    const airportsList = [
+      userInfo.formData.airportList.arrivalAirport,
+      userInfo.formData.airportList.returnAirport,
+    ];
+
+    // 建立空的日期地點列表
+    const initialList: { date: string; places: Place[] }[] = [];
+
+    // 根據 formData.dateList 的長度來初始化
+    userInfo.formData.dateList.forEach((date, index) => {
+      // 初始化地點為空的陣列
+      const places: Place[] = [];
+
+      // 如果是第一個日期，將 arrivalAirport 加到最前面
+      if (index === 0) {
+        places.unshift(airportsList[0]);
+      }
+
+      // 如果是最後一個日期，將 returnAirport 加到最後面
+      if (index === userInfo.formData.dateList.length - 1) {
+        places.push(airportsList[1]);
+      }
+
+      initialList.push({ date, places });
+    });
+
+    return initialList;
   });
 
   const updateDatePlaces = (date: string, places: Place[]) => {

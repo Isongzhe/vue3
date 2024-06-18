@@ -66,6 +66,12 @@
                         </div>
                     </template>
                     <div class="place-info">
+                        <!-- <div class="div" v-if="place.arrivalTime">
+                            <el-time-select v-model="place.arrivalTime" placeholder="抵達時間"
+                                :start="timePickerOptions.start" :step="timePickerOptions.step"
+                                :end="timePickerOptions.end" />
+                        </div> -->
+
                         <!-- <el-time-select v-model="place.arrivalTime" placeholder="抵達時間" :start="timePickerOptions.start"
                             :step="timePickerOptions.step" :end="timePickerOptions.end" /> -->
                         <!-- <div>
@@ -100,7 +106,7 @@ import Map from "@/components/Map.vue";
 const emits = defineEmits(['vnode-unmounted']);
 // 設置時間選擇器的選項
 const timePickerOptions = {
-    start: '07:00',
+    start: '00:00',
     step: '00:15',
     end: '23:45',
 };
@@ -110,14 +116,18 @@ const allPlacesList = ref<Place[]>([]);
 
 
 onMounted(() => {
-    console.log('mounted');
+    // 將所有地點列表初始化為 userInfoStore 中的數據
     allPlacesList.value = userInfoStore.userInfo.placesInfo.places;
-    const datePlaces = allDatePlacesList.value.find(item => item.date === selectedDate.value);
-    selectedList.value = datePlaces ? datePlaces.places : [];
+
+    // 監聽 selectedDate 的變化，更新 selectedList
+    watchEffect(() => {
+        const datePlaces = allDatePlacesList.value.find(item => item.date === selectedDate.value);
+        selectedList.value = datePlaces ? datePlaces.places : [];
+    });
 });
 
 const dateOptions = userInfoStore.userInfo.formData.dateList;
-const selectedDate = ref<string>(dateOptions[0])
+const selectedDate = ref<string>("");
 const selectedList = ref<Place[]>([]);
 
 // 監視 selectedList 的變化，並將變化同步到 allDatePlacesList，以便於後續的操作

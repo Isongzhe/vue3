@@ -5,6 +5,7 @@ import FormPage from "@/views/FormPage.vue";
 import MapPage from "@/views/MapPage.vue";
 import PlacePage from "@/views/PlaceView.vue";
 import PlanPage from "@/views/PlanView.vue";
+import MdFilePage from "@/views/MdFileView.vue";
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
         path: "plan",
         name: "Plan",
         component: PlanPage,
+      },
+      {
+        path: "mdfile",
+        name: "Mdfile",
+        component: MdFilePage,
       },
     ],
   },

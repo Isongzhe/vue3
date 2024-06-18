@@ -22,6 +22,16 @@
                     </span>
                 </template>
             </el-tab-pane>
+            <el-tab-pane name="Mdfile" label="行程總覽">
+                <template #label>
+                    <span class="custom-tabs-label">
+                        <el-icon>
+                            <Calendar />
+                        </el-icon>
+                        <span>行程總覽</span>
+                    </span>
+                </template>
+            </el-tab-pane>
             <router-view />
         </el-tabs>
     </div>
