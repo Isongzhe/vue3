@@ -1,10 +1,11 @@
+//src/views/PlanView.vue
 <template>
     <div class="flex flex-wrap gap-4 items-center">
         <el-select v-model="selectedDate" placeholder="Select" size="large" style="width: 240px">
             <el-option v-for="date in dateOptions" :key="date" :label="date" :value="date" />
         </el-select>
     </div>
-    <div id="map"></div>
+    <Map :selectedDay="selectedDay"></Map>
     <div class="flex">
         <el-scrollbar max-height="600px" class="el-scrollbar">
             <el-text>
@@ -85,7 +86,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, onMounted } from 'vue'
+import { reactive, ref, computed, watch, onMounted, watchEffect } from 'vue'
 import { ElCard, ElIcon, ElLink } from 'element-plus';
 import { CollectionTag, } from '@element-plus/icons-vue';
 import { VueDraggable } from 'vue-draggable-plus'
@@ -93,8 +94,10 @@ import { useUserInfoStore } from '@/stores/useUserInfoStore'; // 引入使用者
 import { ElMessage, ElSelect } from 'element-plus';
 import { Delete } from '@element-plus/icons-vue';
 import type { Place } from "@/types";
-import { storeToRefs } from "pinia"
+import { storeToRefs } from "pinia";
+import Map from "@/components/Map.vue";
 
+const emits = defineEmits(['vnode-unmounted']);
 // 設置時間選擇器的選項
 const timePickerOptions = {
     start: '07:00',
@@ -103,23 +106,14 @@ const timePickerOptions = {
 };
 const userInfoStore = useUserInfoStore();
 const { allDatePlacesList } = storeToRefs(userInfoStore);
-
-// const airports = computed(() => [
-//     userInfoStore.userInfo.formData.airportList.arrivalAirport,
-//     userInfoStore.userInfo.formData.airportList.returnAirport,
-// ]);
-
 const allPlacesList = ref<Place[]>([]);
+
 
 onMounted(() => {
     console.log('mounted');
-    // console.log("未加入機場", userInfoStore.userInfo.placesInfo.places);
-    // console.log("機場", airports.value);
     allPlacesList.value = userInfoStore.userInfo.placesInfo.places;
-
-    // // 每次載入時重新將機場數據添加到地點列表的最前面
-    // allPlacesList.value = [...airports.value, ...userInfoStore.userInfo.placesInfo.places];
-    // console.log("加入機場後", allPlacesList.value);
+    const datePlaces = allDatePlacesList.value.find(item => item.date === selectedDate.value);
+    selectedList.value = datePlaces ? datePlaces.places : [];
 });
 
 const dateOptions = userInfoStore.userInfo.formData.dateList;
@@ -134,9 +128,15 @@ watch(selectedList, (newList) => {
     }
 }, { deep: true });
 
+const selectedDay = ref<{ date: string; places: Place[] }>({ date: "", places: [] });
+
+watch(selectedDate, (newDate) => {
+    const foundDay = allDatePlacesList.value.find(day => day.date === newDate);
+    selectedDay.value = foundDay || { date: "", places: [] };
+});
+
 function onClone() {
     console.log('clone');
-    console.log('selectedList', selectedList.value);
 }
 
 function remove(list: Place[], index: number) {
@@ -177,7 +177,7 @@ function getIconComponent(place: Place) {
 
 <style scoped>
 * {
-    font-size: 16px
+    font-size: 16px;
 }
 
 .flex {
