@@ -17,8 +17,8 @@ export const useUserInfoStore = defineStore("userInfo", () => {
 
   const userInfo = reactive<UserInfo>({
     userData: {
-      name: "SUNG-CHE LIN",
-      projectName: "日本行(測試)",
+      name: "",
+      projectName: "",
     },
     formData: {
       googleMapURL: "",
