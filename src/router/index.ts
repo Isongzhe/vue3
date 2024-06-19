@@ -47,7 +47,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory("/vue3/"),
   routes,
 });
 
@@ -55,7 +55,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const isReload = sessionStorage.getItem("isReload") === "true";
   // const allowedRoutes = ["Home"];
-  const allowedRoutes = ["Home", "Place", "Plan"];
+  const allowedRoutes = ["Home"];
   if (
     isReload &&
     typeof to.name === "string" &&
