@@ -25,7 +25,7 @@ export default function () {
   const fetchPlacesNameAPI = async (url: string): Promise<void> => {
     try {
       const response = await axios.get(
-        "https://isongzhe.github.io/vue3/api/crawl_google_map",
+        "http://127.0.0.1:8000/api/crawl_google_map",
         {
           params: {
             url: url,
