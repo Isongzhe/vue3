@@ -2,6 +2,7 @@
     <div class="container">
         <el-scrollbar max-height="600px" class="el-scrollbar">
             <pre>{{ markdownContent }}</pre>
+            <!-- <div v-html="HTMLmarkdownContent" class="HTMLmarkdownContent"></div> -->
         </el-scrollbar>
         <el-text class="mx-1" type="warning">※請將複製的內容貼到 HackMD 編輯區塊</el-text>
         <el-button-group>
@@ -13,7 +14,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserInfoStore } from '@/stores/useUserInfoStore';
 import type { Place } from '@/types';
 import { ElButton, ElMessage, ElScrollbar, ElButtonGroup, ElText } from 'element-plus';
@@ -68,6 +69,12 @@ const copyMarkdownContent = () => {
 const directToHackMD = () => {
     window.open('https://hackmd.io/new');
 }
+
+// import { marked } from 'marked';
+// const HTMLmarkdownContent = computed(() => {
+//     console.log(marked(markdownContent.value));
+//     return marked(markdownContent.value);
+// });
 </script>
 <style scoped>
 .container {
@@ -78,7 +85,7 @@ const directToHackMD = () => {
 }
 
 .el-scrollbar {
-    max-width: 80%;
+    width: 80%;
     border-radius: 8px;
     margin-top: 10px;
     border: 2px solid #05203c;
@@ -95,6 +102,20 @@ const directToHackMD = () => {
     /* 新增這裡 */
 }
 
+/*
+.HTMLmarkdownContent {
+    color: #05203c;
+    margin: 0 auto;
+    overflow: auto;
+    box-sizing: border-box;
+    text-align: left;
+    width: 100%;
+}
+
+.HTMLmarkdownContent>* {
+    margin-bottom: 20px;
+}
+*/
 .el-text {
     margin: 10px auto;
     font-size: 20px;

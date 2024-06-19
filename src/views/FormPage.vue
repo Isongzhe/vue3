@@ -258,7 +258,10 @@ const validateAndFetchPlaces = async () => {
     const urlPattern = /^https:\/\/maps\.app\.goo\.gl\/.+$/;
     if (urlPattern.test(localFormData.googleMapURL)) {
         // 顯示發出請求的連結
-        console.log('發出請求: ' + localFormData.googleMapURL);
+        ElMessage({
+            message: "Google地圖清單連結格式正確，正在發出請求...",
+            type: "success",
+        });
         try {
             // await fetchPlacesName(); //假造的API接口:內部更新places_name[]
             //真實的API接口:給定Google地圖清單連結，內部更新places_name[]
