@@ -36,7 +36,7 @@ export default function () {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/place_info",
+        "https://isongzhe.github.io/vue3/api/place_info",
         rawData,
         requestOptions
       );
