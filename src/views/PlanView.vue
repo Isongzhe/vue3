@@ -70,7 +70,7 @@
                         </div>
                     </template>
                     <div class="place-info">
-                        <div v-if="place.departureTime">
+                        <div v-if="place.departureTime || index === 0">
                             <el-time-select v-model="place.departureTime" placeholder="出發時間"
                                 :start="timePickerOptions.start" :step="timePickerOptions.step"
                                 :end="timePickerOptions.end" />
@@ -153,6 +153,7 @@ watch(selectedDate, (newDate) => {
 
 function onClone() {
     console.log('clone');
+    console.log(selectedList.value);
 }
 
 function remove(list: Place[], index: number) {
